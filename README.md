@@ -12,6 +12,10 @@ Um es zum laufen zu bringen müssen Sie customkinter installieren
 
 ```pip install customtkinter```
 
+Für die Kamera installieren sie opencv
+
+```pip install customtkinter opencv-python pillow```
+
 ## 27.02
 
 ## Arbeitspakete Mateo
