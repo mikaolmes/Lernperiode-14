@@ -1,6 +1,6 @@
 # Lernperiode-14
 
-Mika Olmes, Mateo Muic, Alexander Paucar , Robin Taing
+Mika Olmes, Mateo Muic, Alexander Paucar, Robin Taing
 
 In dieser Lernperiode werden wir ein fiktives Startup führen. Unsere Konkurrenten sind unsere Klassenkameraden.
 
