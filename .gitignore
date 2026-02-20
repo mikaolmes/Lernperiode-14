@@ -1,0 +1,33 @@
+# --- Python Specific ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+
+# --- IDE Specific (VS Code / PyCharm) ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+
+# --- Project Specific (Machine Learning) ---
+# Ignore large dataset folders
+data/raw/
+data/processed/
+
+# Ignore large exported models (optional - keep if small, ignore if >100MB)
+# *.tflite
+# *.h5
+
+# --- Distribution ---
+dist/
+build/
+*.spec
