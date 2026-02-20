@@ -8,6 +8,8 @@ In dieser Lernperiode werden wir ein fiktives Startup führen. Unsere Konkurrent
 
 ## 20.02.2026
 
+Um es zum laufen zu bringen müssen Sie customkinter installieren
+
 ```pip install customtkinter```
 
 ## 27.02
