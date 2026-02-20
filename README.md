@@ -6,6 +6,11 @@ In dieser Lernperiode werden wir ein fiktives Startup führen. Unsere Konkurrent
 
 <img height="200" alt="image" src="https://github.com/user-attachments/assets/aba0faad-29da-4d34-b701-444ea54c24a6" />
 
+## 20.02.2026
+
+```pip install customtkinter```
+
+## 27.02
 
 ## Arbeitspakete Mateo
 
@@ -20,3 +25,9 @@ In dieser Lernperiode werden wir ein fiktives Startup führen. Unsere Konkurrent
 - [ ] Kamera input hinzufügen womit dann die Gebärdensprache aufgenommen wird (noch ohne aufnahme der Zeichen).
 - [ ] Laoyut für Gebärdensprache erstellen, mit Output
 - [ ] Layout für Eingabe und Ausgabe für Morse Code
+
+## Arbeitspakete Robin
+- [ ] morse code lösung -> licht
+- [ ] morse code lösung -> ton
+- [ ] implementierung übersetzer
+- [ ] wöchentlicher Pitch/Bericht
