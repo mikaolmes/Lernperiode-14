@@ -36,6 +36,9 @@ Für die Kamera installieren sie opencv
 - [ ] Machine Learning Modell zur Gestenerkennung trainieren und speichern.
 - [ ] Erkennungslogik in die Benutzeroberfläche der Desktop-App integrieren.
 
+## Zusammenfassung
+Heute habe ich die MediaPipe Handerkennung Implementiert und eine Fingerzählung 1 bis 5 pro hand. 
+
 ## Mika
 - [X] Startfenster mit Buttons erstellen um zwischen Morse Code und Sign Language auswählen zu können.
 - [X] Kamera input hinzufügen womit dann die Gebärdensprache aufgenommen wird (noch ohne aufnahme der Zeichen).
@@ -60,6 +63,9 @@ Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwisc
 # 06.03.2026
 
 ## Mateo
+- [ ] Implementierung sign language alphabet recognition
+- [ ] UI änderungen für SignLanguage.py
+- [ ] 
 
 ## Mika
 
