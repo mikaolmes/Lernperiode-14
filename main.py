@@ -1,5 +1,6 @@
 import customtkinter
 from SignLanguage import CameraFrame
+from morsecode import MorseCodeFrame
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -15,13 +16,17 @@ def show_main_menu():
     current_frame = create_main_menu()
     current_frame.pack(fill="both", expand=True)
 
-
 def signLanguage():
     global current_frame
     current_frame.pack_forget()
     current_frame = CameraFrame(root, show_main_menu)
     current_frame.pack(fill="both", expand=True)
 
+def morsecode():
+    global current_frame
+    current_frame.pack_forget()
+    current_frame = MorseCodeFrame(root, show_main_menu)
+    current_frame.pack(fill="both", expand=True)
 
 def create_main_menu():
     frame = customtkinter.CTkFrame(root)
@@ -32,10 +37,11 @@ def create_main_menu():
     button = customtkinter.CTkButton(frame, text="Gebärdensprache", command=signLanguage)
     button.pack(pady=10)
 
-    button2 = customtkinter.CTkButton(frame, text="Morsecode")
+    button2 = customtkinter.CTkButton(frame, text="Morsecode", command=morsecode)
     button2.pack(pady=10)
 
     return frame
+
 
 
 show_main_menu()
