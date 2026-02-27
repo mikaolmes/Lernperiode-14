@@ -37,3 +37,9 @@ Für die Kamera installieren sie opencv
 - [ ] morse code lösung -> ton
 - [ ] implementierung übersetzer
 - [ ] wöchentlicher Pitch/Bericht
+
+## Arbeitspakete Alexander
+- [ ] Mapping-Logik für Text-zu-Morse und Morse-zu-Text entwickeln.
+- [ ] Logik zur Bereinigung von User-Inputs schreiben.
+- [ ] Funktion implementieren, um übersetzte Texte mit Zeitstempel in einer `history.txt` zu speichern.
+- [ ] Schnittstellen-Funktionen definieren, damit Mikas UI die Übersetzungs-Logik einfach aufrufen kann.
