@@ -14,13 +14,13 @@ Um es zum laufen zu bringen müssen Sie customkinter installieren
 
 Für die Kamera installieren sie opencv
 
-```pip install customtkinter opencv-python pillow```
+```pip install customtkinter opencv-python pillow mediapipe```
 
 ## 27.02
 
 ## Arbeitspakete Mateo
 
-- [ ] MediaPipe für 21 Hand-Landmarks im Live-Video aufsetzen.
+- [x] MediaPipe für 21 Hand-Landmarks im Live-Video aufsetzen.
 - [ ] Koordinaten-Daten für die Gesten als CSV-Datei aufnehmen.
 - [ ] Machine Learning Modell zur Gestenerkennung trainieren und speichern.
 - [ ] Erkennungslogik in die Benutzeroberfläche der Desktop-App integrieren.
