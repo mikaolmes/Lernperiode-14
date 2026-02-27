@@ -16,11 +16,23 @@ Für die Kamera installieren sie opencv
 
 ```pip install customtkinter opencv-python pillow mediapipe```
 
+## Finger Counting Feature
+
+**Neu hinzugefügt**: Fingerzählung von 1-5!
+
+- Starte `SignLanguage.py` und halte 1-5 Finger in die Kamera
+- Die Anzahl wird live auf dem Bildschirm angezeigt
+- Funktioniert mit mehreren Händen gleichzeitig
+
+📄 Siehe [FINGER_COUNTING.md](FINGER_COUNTING.md) für Details und wie Teammitglieder es nutzen können!
+
+## 27.02
 
 # Mateo
 ## 27.02.2026
 
 - [x] MediaPipe für 21 Hand-Landmarks im Live-Video aufsetzen.
+- [x] Finger-Counting Logik (1-5 Finger erkennen) implementieren.
 - [ ] Koordinaten-Daten für die Gesten als CSV-Datei aufnehmen.
 - [ ] Machine Learning Modell zur Gestenerkennung trainieren und speichern.
 - [ ] Erkennungslogik in die Benutzeroberfläche der Desktop-App integrieren.

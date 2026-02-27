@@ -5,6 +5,9 @@ import mediapipe as mp  # MediaPipe für Handerkennung
 from mediapipe.tasks.python import vision
 import os
 
+# Import finger counter module (for counting 1-5)
+from finger_counter import FingerCounter
+
 # ================================
 # MediaPipe Tasks API Setup
 # ================================
@@ -44,6 +47,10 @@ class CameraFrame(customtkinter.CTkFrame):
         self.cam = None
         self.landmarker = None
         self.frame_timestamp_ms = 0
+        
+        # Finger counter instance
+        self.finger_counter = FingerCounter()
+        self.current_finger_count = 0
 
         # Bildanzeige-Label
         self.label = customtkinter.CTkLabel(self, text="")
@@ -145,6 +152,20 @@ class CameraFrame(customtkinter.CTkFrame):
                 for landmark in hand_landmarks:
                     cx, cy = int(landmark.x * w), int(landmark.y * h)
                     cv2.circle(rgb_image, (cx, cy), 5, (255, 0, 0), -1)
+        
+        # Display finger count on screen
+        if self.current_finger_count > 0:
+            text = f"Fingers: {self.current_finger_count}"
+            cv2.putText(
+                rgb_image, 
+                text, 
+                (10, 50),  # Top-left position
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1.5,  # Font size
+                (255, 255, 0),  # Cyan color
+                3,  # Thickness
+                cv2.LINE_AA
+            )
 
         return rgb_image
 
@@ -173,6 +194,10 @@ class CameraFrame(customtkinter.CTkFrame):
                         mp_image,
                         self.frame_timestamp_ms
                     )
+
+                    # Count fingers
+                    total_fingers, individual_counts = self.finger_counter.count_all_hands(result)
+                    self.current_finger_count = total_fingers
 
                     # Landmark-Punkte einzeichnen
                     frame_rgb = self.draw_landmarks_on_image(
