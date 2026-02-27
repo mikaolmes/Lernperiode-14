@@ -55,10 +55,10 @@ Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwisc
 - [ ] wöchentlicher Pitch/Bericht
 
 ## Alexander
-- [ ] Mapping-Logik für Text-zu-Morse und Morse-zu-Text entwickeln.
-- [ ] Logik zur Bereinigung von User-Inputs schreiben.
-- [ ] Funktion implementieren, um übersetzte Texte mit Zeitstempel in einer `history.txt` zu speichern.
-- [ ] Schnittstellen-Funktionen definieren, damit Mikas UI die Übersetzungs-Logik einfach aufrufen kann.
+- [X] Mapping-Logik für Text-zu-Morse und Morse-zu-Text entwickeln.
+- [X] Logik zur Bereinigung von User-Inputs schreiben.
+- [X] Funktion implementieren, um übersetzte Texte mit Zeitstempel in einer `history.txt` zu speichern.
+- [X] Schnittstellen-Funktionen definieren, damit Mikas UI die Übersetzungs-Logik einfach aufrufen kann.
 
 # 06.03.2026
 
