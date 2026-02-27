@@ -16,10 +16,9 @@ Für die Kamera installieren sie opencv
 
 ```pip install customtkinter opencv-python pillow mediapipe```
 
-## 27.02
 
 # Mateo
-## Arbeitspakete
+## 27.02.2026
 
 - [x] MediaPipe für 21 Hand-Landmarks im Live-Video aufsetzen.
 - [ ] Koordinaten-Daten für die Gesten als CSV-Datei aufnehmen.
@@ -43,14 +42,14 @@ Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwisc
 - [ ] Pitch für nächste woche vorbereiten
 
 # Robin
-## Arbeitspakete
+## 27.02.2026
 - [ ] morse code lösung -> licht
 - [ ] morse code lösung -> ton
 - [ ] implementierung übersetzer
 - [ ] wöchentlicher Pitch/Bericht
 
 # Alexander
-## Arbeitspakete
+## 27.02.2026
 - [ ] Mapping-Logik für Text-zu-Morse und Morse-zu-Text entwickeln.
 - [ ] Logik zur Bereinigung von User-Inputs schreiben.
 - [ ] Funktion implementieren, um übersetzte Texte mit Zeitstempel in einer `history.txt` zu speichern.
