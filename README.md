@@ -27,8 +27,8 @@ Für die Kamera installieren sie opencv
 
 
 ## Arbeitspakete Mika
-- [ ] Startfenster mit Buttons erstellen um zwischen Morse Code und Sign Language auswählen zu können.
-- [ ] Kamera input hinzufügen womit dann die Gebärdensprache aufgenommen wird (noch ohne aufnahme der Zeichen).
+- [X] Startfenster mit Buttons erstellen um zwischen Morse Code und Sign Language auswählen zu können.
+- [X] Kamera input hinzufügen womit dann die Gebärdensprache aufgenommen wird (noch ohne aufnahme der Zeichen).
 - [ ] Laoyut für Gebärdensprache erstellen, mit Output
 - [ ] Layout für Eingabe und Ausgabe für Morse Code
 
