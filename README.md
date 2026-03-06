@@ -94,3 +94,4 @@ Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieh
 ## Robin
 
 ## Alexander
+- [ ] Präsentation vorbereiten
