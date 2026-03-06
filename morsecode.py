@@ -2,7 +2,6 @@ import customtkinter
 import cv2
 from PIL import Image, ImageTk
 
-
 class MorseCodeFrame(customtkinter.CTkFrame):
     def __init__(self, master, go_back_callback=None):
         super().__init__(master)
@@ -10,13 +9,16 @@ class MorseCodeFrame(customtkinter.CTkFrame):
         self.go_back_callback = go_back_callback
         self.cam = None
 
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
         # Bildanzeige
         self.label = customtkinter.CTkLabel(self, text="")
-        self.label.pack(pady=10)
+        self.label.grid(row=0, column=0, sticky="nsew", pady=10)
 
         # Button-Container
         btn_frame = customtkinter.CTkFrame(self)
-        btn_frame.pack(pady=10)
+        btn_frame.grid(row=1, column=0, pady=10)
 
         # Start Button
         start_btn = customtkinter.CTkButton(
@@ -40,7 +42,7 @@ class MorseCodeFrame(customtkinter.CTkFrame):
             text="Zurück",
             command=self.go_back
         )
-        back_btn.pack(pady=10)
+        back_btn.grid(row=2, column=0, pady=10)
 
     # =========================
     # Kamera starten
@@ -62,7 +64,7 @@ class MorseCodeFrame(customtkinter.CTkFrame):
     # =========================
     def go_back(self):
         self.stop_camera()
-        self.pack_forget()
+        self.grid_forget()
 
         if self.go_back_callback:
             self.go_back_callback()

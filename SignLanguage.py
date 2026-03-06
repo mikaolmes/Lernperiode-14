@@ -5,10 +5,6 @@ import mediapipe as mp  # MediaPipe für Handerkennung
 from mediapipe.tasks.python import vision
 import os
 
-# ================================
-# MediaPipe Tasks API Setup
-# ================================
-
 BaseOptions = mp.tasks.BaseOptions
 HandLandmarker = mp.tasks.vision.HandLandmarker
 HandLandmarkerOptions = mp.tasks.vision.HandLandmarkerOptions
@@ -28,11 +24,6 @@ HAND_CONNECTIONS = [
 # Pfad zum MediaPipe Modell (.task Datei muss im selben Ordner liegen)
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "hand_landmarker.task")
 
-
-# ==========================================
-# CameraFrame Klasse (für Import in main.py)
-# ==========================================
-
 class CameraFrame(customtkinter.CTkFrame):
     def __init__(self, master, go_back_callback=None):
         super().__init__(master)
@@ -40,18 +31,20 @@ class CameraFrame(customtkinter.CTkFrame):
         # Callback-Funktion für Zurück-Button
         self.go_back_callback = go_back_callback
 
-        # Kamera- & MediaPipe-Variablen
         self.cam = None
         self.landmarker = None
         self.frame_timestamp_ms = 0
 
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
         # Bildanzeige-Label
         self.label = customtkinter.CTkLabel(self, text="")
-        self.label.pack(pady=10)
+        self.label.grid(row=0, column=0, sticky="nsew", pady=10)
 
         # Button-Container
         btn_frame = customtkinter.CTkFrame(self)
-        btn_frame.pack(pady=10)
+        btn_frame.grid(row=1, column=0, pady=10)
 
         # Kamera starten
         start_btn = customtkinter.CTkButton(
@@ -75,13 +68,13 @@ class CameraFrame(customtkinter.CTkFrame):
             text="Zurück",
             command=self.go_back
         )
-        back_btn.pack(pady=10)
+        back_btn.grid(row=2, column=0, pady=10)
 
     # ================================
     # Kamera starten
     # ================================
     def start_camera(self):
-        self.cam = cv2.VideoCapture(0)  # Standard-Webcam
+        self.cam = cv2.VideoCapture(0)  
         self.frame_timestamp_ms = 0
 
         # MediaPipe HandLandmarker konfigurieren
@@ -95,8 +88,6 @@ class CameraFrame(customtkinter.CTkFrame):
         )
 
         self.landmarker = HandLandmarker.create_from_options(options)
-
-        # Frame-Loop starten
         self.update_frame()
 
     # ================================
@@ -115,8 +106,8 @@ class CameraFrame(customtkinter.CTkFrame):
     # Zurück-Button Funktion
     # ================================
     def go_back(self):
-        self.stop_camera()  # Wichtig: Kamera vorher stoppen
-        self.pack_forget()  # Frame ausblenden
+        self.stop_camera()  
+        self.grid_forget()  
 
         if self.go_back_callback:
             self.go_back_callback()  # Zurück zum Hauptmenü
@@ -186,25 +177,7 @@ class CameraFrame(customtkinter.CTkFrame):
                 ctk_img = ImageTk.PhotoImage(img)
 
                 self.label.configure(image=ctk_img, text="")
-                self.label.image = ctk_img  # Wichtig gegen Garbage Collection
+                self.label.image = ctk_img  
 
-            # Loop alle 10ms erneut aufrufen
+
             self.after(10, self.update_frame)
-
-
-# ===================================================
-# Nur ausführen wenn Datei direkt gestartet wird
-# (NICHT beim Import in main.py)
-# ===================================================
-if __name__ == "__main__":
-    customtkinter.set_appearance_mode("dark")
-    customtkinter.set_default_color_theme("dark-blue")
-
-    root = customtkinter.CTk()
-    root.geometry("700x600")
-    root.title("Sign Language Camera")
-
-    frame = CameraFrame(root)
-    frame.pack(fill="both", expand=True)
-
-    root.mainloop()

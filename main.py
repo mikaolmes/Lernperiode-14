@@ -1,48 +1,49 @@
-import customtkinter
+import customtkinter as ctk
 from SignLanguage import CameraFrame
 from morsecode import MorseCodeFrame
 
-customtkinter.set_appearance_mode("dark")
-customtkinter.set_default_color_theme("dark-blue")
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("dark-blue")
 
-root = customtkinter.CTk()
+root = ctk.CTk()
 root.geometry("700x600")
+
+root.grid_columnconfigure(0, weight=1)
+root.grid_rowconfigure(0, weight=1)
 
 current_frame = None
 
+def switch_frame(new_frame_class):
+    global current_frame
+    if current_frame is not None:
+        current_frame.destroy() 
+    
+    current_frame = new_frame_class(root, show_main_menu)
+    current_frame.grid(row=0, column=0, sticky="nsew")
 
 def show_main_menu():
-    global current_frame
-    current_frame = create_main_menu()
-    current_frame.pack(fill="both", expand=True)
+    switch_frame(MainMenuFrame)
 
-def signLanguage():
-    global current_frame
-    current_frame.pack_forget()
-    current_frame = CameraFrame(root, show_main_menu)
-    current_frame.pack(fill="both", expand=True)
+class MainMenuFrame(ctk.CTkFrame):
+    def __init__(self, master, back_callback):
+        super().__init__(master)
+        
 
-def morsecode():
-    global current_frame
-    current_frame.pack_forget()
-    current_frame = MorseCodeFrame(root, show_main_menu)
-    current_frame.pack(fill="both", expand=True)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure((0, 1, 2), weight=1)
 
-def create_main_menu():
-    frame = customtkinter.CTkFrame(root)
+        self.label = ctk.CTkLabel(self, text="Was möchten Sie übersetzen?", font=("Roboto", 32))
+        self.label.grid(row=0, column=0, pady=20)
 
-    label = customtkinter.CTkLabel(frame, text="Was möchten Sie übersetzen?", font=("Roboto", 24))
-    label.pack(pady=20)
+        self.button1 = ctk.CTkButton(self, text="Gebärdensprache", 
+                                     font=("Roboto", 20),
+                                     command=lambda: switch_frame(CameraFrame))
+        self.button1.grid(row=1, column=0, pady=20, padx=50, sticky="nsew")
 
-    button = customtkinter.CTkButton(frame, text="Gebärdensprache", command=signLanguage)
-    button.pack(pady=10)
-
-    button2 = customtkinter.CTkButton(frame, text="Morsecode", command=morsecode)
-    button2.pack(pady=10)
-
-    return frame
-
-
+        self.button2 = ctk.CTkButton(self, text="Morsecode", 
+                                     font=("Roboto", 20),
+                                     command=lambda: switch_frame(MorseCodeFrame))
+        self.button2.grid(row=2, column=0, pady=20, padx=50, sticky="nsew")
 
 show_main_menu()
 root.mainloop()
