@@ -73,7 +73,10 @@ Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwisc
 - [X] Layout für Gebärdensprache erstellen, mit Output
 - [X] Layout für Morse Code, mit Input
 - [X] HomePage dynamisch anpassbar machen.
-- [ ] Globales "umstyling" z.b. Farben ändern.
+- [X] Globales "umstyling" z.b. Farben ändern.
+
+## Zusammenfassung
+Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieht wenn man das Fenster kleiner bzw. grösser macht. Danach habe ich Input für morsecode und output für die Signlanguage erstellt. Bei der Signlanguage werden auch schon Buchstaben ausgegeben. Zuletzt habe ich noch ein kleines Umstyling vorgenommen. Ich habe die Farben von Blau auf ein Grün gewechselt.
 
 
 ## Robin
