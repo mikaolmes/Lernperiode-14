@@ -96,7 +96,7 @@ class CameraFrame(customtkinter.CTkFrame):
             self.output_container, 
             text="Warte auf Eingabe...", 
             font=("Roboto", 28, "bold"), 
-            text_color="#1f6aa5"
+            text_color="#10b981"
         )
         self.result_text.pack(pady=(0, 10))
 
@@ -216,7 +216,7 @@ class CameraFrame(customtkinter.CTkFrame):
                         recognized_text = "".join(self.current_letters)
                         self.result_text.configure(text=recognized_text, text_color="#10b981")
                     else:
-                        self.result_text.configure(text="Suche Hand...", text_color="#555555")
+                        self.result_text.configure(text="Suche Hand...", text_color="#10b981")
 
                     # Landmark-Punkte einzeichnen
                     frame_rgb = self.draw_landmarks_on_image(
