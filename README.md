@@ -70,7 +70,7 @@ Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwisc
 ## Mika
 
 ## 06.03.2026
-- [ ] Layout für Gebärdensprache erstellen, mit Output
+- [X] Layout für Gebärdensprache erstellen, mit Output
 - [ ] Layout für Morse Code, mit Input
 - [X] HomePage dynamisch anpassbar machen.
 - [ ] Globales "umstyling" z.b. Farben ändern.
