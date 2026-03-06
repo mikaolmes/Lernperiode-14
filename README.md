@@ -72,8 +72,8 @@ Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwisc
 ## 06.03.2026
 - [ ] Layout für Gebärdensprache erstellen, mit Output
 - [ ] Layout für Morse Code, mit Input
-- [ ] HomePage grösser machen, damit es schöner aussieht.
-- [ ] Pitch für nächste woche vorbereiten
+- [ ] HomePage dynamisch anpassbar machen.
+- [ ] Globales "umstyling" z.b. Farben ändern.
 
 
 ## Robin
