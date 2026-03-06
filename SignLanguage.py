@@ -81,6 +81,25 @@ class CameraFrame(customtkinter.CTkFrame):
         )
         back_btn.grid(row=2, column=0, pady=10)
 
+        # Output-Container für erkannte Gesten
+        self.output_container = customtkinter.CTkFrame(self, fg_color="#2b2b2b", corner_radius=10)
+        self.output_container.grid(row=3, column=0, pady=20, padx=40, sticky="ew")
+
+        self.output_label = customtkinter.CTkLabel(
+            self.output_container, 
+            text="Erkannte Geste:", 
+            font=("Roboto", 14, "bold")
+        )
+        self.output_label.pack(pady=(10, 0))
+
+        self.result_text = customtkinter.CTkLabel(
+            self.output_container, 
+            text="Warte auf Eingabe...", 
+            font=("Roboto", 28, "bold"), 
+            text_color="#1f6aa5"
+        )
+        self.result_text.pack(pady=(0, 10))
+
     # ================================
     # Kamera starten
     # ================================
@@ -193,6 +212,12 @@ class CameraFrame(customtkinter.CTkFrame):
                     # Recognize sign language letters
                     self.current_letters = self.recognizer.recognize_from_result(result)
 
+                    if self.current_letters:
+                        recognized_text = "".join(self.current_letters)
+                        self.result_text.configure(text=recognized_text, text_color="#10b981")
+                    else:
+                        self.result_text.configure(text="Suche Hand...", text_color="#555555")
+
                     # Landmark-Punkte einzeichnen
                     frame_rgb = self.draw_landmarks_on_image(
                         frame_rgb,
@@ -209,3 +234,16 @@ class CameraFrame(customtkinter.CTkFrame):
 
 
             self.after(10, self.update_frame)
+
+if __name__ == "__main__":
+    customtkinter.set_appearance_mode("dark")
+    customtkinter.set_default_color_theme("dark-blue")
+
+    root = customtkinter.CTk()
+    root.geometry("700x600")
+    root.title("Sign Language Camera")
+
+    frame = CameraFrame(root)
+    frame.pack(fill="both", expand=True)
+
+    root.mainloop()
