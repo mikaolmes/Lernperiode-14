@@ -44,6 +44,33 @@ class MorseCodeFrame(customtkinter.CTkFrame):
         )
         back_btn.grid(row=2, column=0, pady=10)
 
+        # Eingabefeld für Text-zu-Morse
+        self.input_field = customtkinter.CTkEntry(
+            self, 
+            placeholder_text="Text zum Übersetzen hier eingeben...", 
+            width=400, 
+            height=40
+        )
+        self.input_field.grid(row=3, column=0, pady=10, padx=20)
+
+        # Textbox für die Anzeige (Read-Only)
+        self.morse_output = customtkinter.CTkTextbox(
+            self, 
+            width=400, 
+            height=100, 
+            corner_radius=10
+        )
+        self.morse_output.grid(row=4, column=0, pady=10, padx=20)
+        self.morse_output.insert("0.0", "Hier erscheint der Morse-Code...")
+        
+        self.morse_output.configure(state="disabled")
+
+    def update_output(self, new_text):
+        self.morse_output.configure(state="normal") 
+        self.morse_output.delete("0.0", "end")     
+        self.morse_output.insert("0.0", new_text) 
+        self.morse_output.configure(state="disabled")
+
     # =========================
     # Kamera starten
     # =========================
@@ -84,6 +111,6 @@ class MorseCodeFrame(customtkinter.CTkFrame):
                 ctk_img = ImageTk.PhotoImage(img)
 
                 self.label.configure(image=ctk_img, text="")
-                self.label.image = ctk_img  # Wichtig!
+                self.label.image = ctk_img  
 
-            self.after(16, self.update_frame)  # ~60 FPS
+            self.after(16, self.update_frame)
