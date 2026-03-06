@@ -68,8 +68,6 @@ Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwisc
 - [ ] andere sachen keine ahnung noch
 
 ## Mika
-
-## 06.03.2026
 - [X] Layout für Gebärdensprache erstellen, mit Output
 - [X] Layout für Morse Code, mit Input
 - [X] HomePage dynamisch anpassbar machen.
@@ -78,6 +76,20 @@ Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwisc
 ## Zusammenfassung
 Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieht wenn man das Fenster kleiner bzw. grösser macht. Danach habe ich Input für morsecode und output für die Signlanguage erstellt. Bei der Signlanguage werden auch schon Buchstaben ausgegeben. Zuletzt habe ich noch ein kleines Umstyling vorgenommen. Ich habe die Farben von Blau auf ein Grün gewechselt.
 
+
+## Robin
+
+## Alexander
+
+
+# 20.03.2026
+
+## Mateo
+
+## Mika
+- [ ] Logik: Implementierung einer Funktion, die erkannte Gebärden oder Morse-Texte mit Zeitstempel in einer history.txt oder history.json speichert.
+- [ ] UI: Einbindung eines "Verlauf löschen"-Buttons und einer scrollbaren Liste (CTkScrollableFrame) in der main.py oder auf einer separaten "History"-Seite.
+- [ ] Hotkeys: Bindung von Tasten (z. B. ESC für Zurück, SPACE für Start/Stop Kamera), damit man die Maus weniger nutzen muss.
 
 ## Robin
 
