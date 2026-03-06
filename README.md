@@ -64,7 +64,7 @@ Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwisc
 
 ## Mateo
 - [x] Implementierung sign language alphabet recognition (funktioniert so halb. Nicht alles wird erkannt)
-- [ ] UI änderungen für SignLanguage.py
+- [x] UI änderungen für SignLanguage.py
 - [ ] andere sachen keine ahnung noch
 
 ## Mika
