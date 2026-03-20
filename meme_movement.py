@@ -265,6 +265,7 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
             self.after(10, self.update_frame)
             return
 
+        frame_img = cv2.flip(frame_img, 1)
         frame_rgb = cv2.cvtColor(frame_img, cv2.COLOR_BGR2RGB)
 
         if self.landmarker:
