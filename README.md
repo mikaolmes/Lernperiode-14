@@ -91,7 +91,7 @@ Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieh
 
 ## Mika
 - [ ] Logik: Download funktion hinzufügen, sodass man eine .txt Datei mit den Übersetzungen herunterlädt.
-- [ ] UI: Einbindung einer "Progress-Bar" für die drei Sekunden, damit man sieht wie schnell das funktioniert. Dazu einen "Fast-Mode"
+- [X] UI: Einbindung einer "Progress-Bar" für die drei Sekunden, damit man sieht wie schnell das funktioniert. Dazu einen "Fast-Mode"
 - [X] Hotkeys: Bindung von Tasten (z. B. ESC für Zurück, SPACE für Start/Stop Kamera), damit man die Maus weniger nutzen muss.
 - [X] Präsentation vorbereiten
 
