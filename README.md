@@ -92,9 +92,9 @@ Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieh
 
 ## Mateo
 
-- [ ] Implementierung Tracking Absolute Cinema
-- [ ] Implementierung middle finger (gorilla)
-- [ ] Implementierung bewegungs dings für 67 meme (wenn genug zeit) 
+- [x] Implementierung Tracking Absolute Cinema
+- [x] Implementierung middle finger (gorilla)
+- [x] Implementierung Nerd meme
 
 ## Mika
 - [ ] Logik: Download funktion hinzufügen, sodass man eine .txt Datei mit den Übersetzungen herunterlädt.
@@ -132,5 +132,7 @@ Lösung -> Auf Web (mit neuer erstellung des Projektes neu möglich)
 
 ## Mika
 ## Mateo
+- [ ] Implementierung movemement Tracker
+- [ ] Verbesserung der hand tracking da aus manchen winkeln es nicht erkennt
 ## Robin
 ## Alex
