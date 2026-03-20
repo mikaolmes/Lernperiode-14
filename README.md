@@ -86,7 +86,7 @@ Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieh
 ## Mateo
 
 - [ ] Implementierung Tracking Absolute Cinema
-- [ ] 
+- [ ] Implementierung bewegungs dings für 67 meme 
 
 ## Mika
 - [ ] Logik: Download funktion hinzufügen, sodass man eine .txt Datei mit den Übersetzungen herunterlädt.
