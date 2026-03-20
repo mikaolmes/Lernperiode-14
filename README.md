@@ -103,4 +103,5 @@ Umgehung Fehler -> started nicht in ios Expo app (Time out).
 - [ ] Alternativen falls Expo App immer noch nicht funktioniert, finden
 
 ## Alexander
-
+- [ ] Implementierung Reaktion Meme Geste
+- [ ] Anti-spam system
