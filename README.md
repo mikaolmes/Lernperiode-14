@@ -90,8 +90,9 @@ Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieh
 - [ ] Logik: Implementierung einer Funktion, die erkannte Gebärden oder Morse-Texte mit Zeitstempel in einer history.txt oder history.json speichert.
 - [ ] UI: Einbindung eines "Verlauf löschen"-Buttons und einer scrollbaren Liste (CTkScrollableFrame) in der main.py oder auf einer separaten "History"-Seite.
 - [ ] Hotkeys: Bindung von Tasten (z. B. ESC für Zurück, SPACE für Start/Stop Kamera), damit man die Maus weniger nutzen muss.
+- [X] Präsentation vorbereiten
 
 ## Robin
 
 ## Alexander
-- [ ] Präsentation vorbereiten
+
