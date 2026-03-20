@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from SignLanguage import CameraFrame
 from morsecode import MorseCodeFrame
+from meme_movement import MemeMovementTestFrame
 
 ctk.set_appearance_mode("dark")
 
@@ -34,7 +35,7 @@ class MainMenuFrame(ctk.CTkFrame):
         
         self.grid_columnconfigure(0, weight=1)
        
-        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
 
         
         self.label = ctk.CTkLabel(
@@ -75,6 +76,19 @@ class MainMenuFrame(ctk.CTkFrame):
             command=lambda: master.switch_frame(MorseCodeFrame)
         )
         self.button2.grid(row=3, column=0, pady=15)
+
+        self.button3 = ctk.CTkButton(
+            self,
+            text="Meme Movement Test",
+            font=("Roboto", 22, "bold"),
+            height=80,
+            width=400,
+            corner_radius=15,
+            fg_color="#1f2937",
+            hover_color="#374151",
+            command=lambda: master.switch_frame(MemeMovementTestFrame)
+        )
+        self.button3.grid(row=4, column=0, pady=15)
 
 if __name__ == "__main__":
     app = MainApp()
