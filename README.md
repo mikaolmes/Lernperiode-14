@@ -96,6 +96,11 @@ Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieh
 
 
 ## Robin
+Umgehung Fehler -> started nicht in ios Expo app (Time out).
+- [x] Neuinstallierung Expo und Versionskontrolle
+- [x] Projektes Projekt von 0 wieder starten, dieses Mal mit der Offiziellen Docs
+- [ ] Pages Home und About vom alten js Code im neuen React umschreiben
+- [ ] Alternativen falls Expo App immer noch nicht funktioniert, finden
 
 ## Alexander
 
