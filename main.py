@@ -4,23 +4,26 @@ from morsecode import MorseCodeFrame
 from meme_movement import MemeMovementTestFrame
 
 ctk.set_appearance_mode("dark")
-
 ctk.set_default_color_theme("green") 
 
 class MainApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Sign & Morse Translator")
-        self.geometry("900x700")
+        self.title("Sign & Morse Translator Pro")
+        self.geometry("800x800")
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
+        # Globaler Hotkey: Esc bringt einen immer zurück zum Menü
+        self.bind("<Escape>", lambda e: self.show_main_menu())
+        
+        self.current_frame = None
         self.show_main_menu()
 
     def switch_frame(self, new_frame_class):
-        if hasattr(self, "current_frame") and self.current_frame:
+        if self.current_frame:
             self.current_frame.destroy()
         
         self.current_frame = new_frame_class(self, self.show_main_menu)
@@ -36,43 +39,31 @@ class MainMenuFrame(ctk.CTkFrame):
         self.grid_columnconfigure(0, weight=1)
        
         self.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
+        self.grid_rowconfigure((0, 1, 2, 3), weight=1)
 
-        
         self.label = ctk.CTkLabel(
             self, 
-            text="Übersetzungs-Tool", 
-            font=("Bahnschrift", 42, "bold"),
-            text_color="#10b981" 
+            text="Übersetzungs-Zentrale", 
+            font=("Bahnschrift", 46, "bold"),
+            text_color="#10b981"
         )
         self.label.grid(row=0, column=0, pady=(40, 10))
 
-        self.subtitle = ctk.CTkLabel(
-            self, 
-            text="Wählen Sie eine Methode aus:", 
-            font=("Roboto", 18)
-        )
-        self.subtitle.grid(row=1, column=0, pady=(0, 20))
-
         self.button1 = ctk.CTkButton(
             self, 
-            text="Gebärdensprache", 
+            text="Gebärdensprache (1)", 
             font=("Roboto", 22, "bold"),
-            height=80,
-            width=400,
-            corner_radius=15,
+            height=80, width=400, corner_radius=15,
             command=lambda: master.switch_frame(CameraFrame)
         )
         self.button1.grid(row=2, column=0, pady=15)
 
         self.button2 = ctk.CTkButton(
             self, 
-            text="Morsecode", 
+            text="Morsecode (2)", 
             font=("Roboto", 22, "bold"),
-            height=80,
-            width=400,
-            corner_radius=15,
-            fg_color="#333333",
-            hover_color="#444444",
+            height=80, width=400, corner_radius=15,
+            fg_color="#333333", hover_color="#444444",
             command=lambda: master.switch_frame(MorseCodeFrame)
         )
         self.button2.grid(row=3, column=0, pady=15)
@@ -89,6 +80,9 @@ class MainMenuFrame(ctk.CTkFrame):
             command=lambda: master.switch_frame(MemeMovementTestFrame)
         )
         self.button3.grid(row=4, column=0, pady=15)
+        # Ziffern-Hotkeys für das Menü
+        master.bind("1", lambda e: master.switch_frame(CameraFrame))
+        master.bind("2", lambda e: master.switch_frame(MorseCodeFrame))
 
 if __name__ == "__main__":
     app = MainApp()
