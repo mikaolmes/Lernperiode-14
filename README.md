@@ -6,7 +6,7 @@ In dieser Lernperiode werden wir ein fiktives Startup führen. Unsere Konkurrent
 
 <img height="200" alt="image" src="https://github.com/user-attachments/assets/aba0faad-29da-4d34-b701-444ea54c24a6" />
 
-## 20.02.2026
+# 20.02.2026
 
 Um es zum laufen zu bringen müssen Sie customkinter installieren
 
