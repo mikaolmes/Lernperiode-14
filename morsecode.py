@@ -71,6 +71,7 @@ class MorseCodeFrame(customtkinter.CTkFrame):
         if self.cam and self.cam.isOpened():
             ret, frame_img = self.cam.read()
             if ret:
+                frame_img = cv2.flip(frame_img, 1)
                 frame_img = cv2.cvtColor(frame_img, cv2.COLOR_BGR2RGB)
                 img = Image.fromarray(frame_img).resize((640, 480))
                 ctk_img = ImageTk.PhotoImage(img)
