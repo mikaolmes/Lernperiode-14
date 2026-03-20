@@ -81,10 +81,12 @@ Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieh
 
 ## Alexander
 
-
 # 20.03.2026
 
 ## Mateo
+
+- [ ] Implementierung Tracking Absolute Cinema
+- [ ] 
 
 ## Mika
 - [ ] Logik: Implementierung einer Funktion, die erkannte Gebärden oder Morse-Texte mit Zeitstempel in einer history.txt oder history.json speichert.
