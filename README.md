@@ -36,7 +36,7 @@ Für die Kamera installieren sie opencv
 - [ ] Machine Learning Modell zur Gestenerkennung trainieren und speichern.
 - [ ] Erkennungslogik in die Benutzeroberfläche der Desktop-App integrieren.
 
-## Zusammenfassung
+### Zusammenfassung
 Heute habe ich die MediaPipe Handerkennung Implementiert und eine Fingerzählung 1 bis 5 pro hand. 
 
 ## Mika
@@ -45,7 +45,7 @@ Heute habe ich die MediaPipe Handerkennung Implementiert und eine Fingerzählung
 - [ ] Laoyut für Gebärdensprache erstellen, mit Output
 - [ ] Layout für Eingabe und Ausgabe für Morse Code
 
-## Zusammenfassung
+### Zusammenfassung
 Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwischen Gebärdensprache und Morsecode translation auswählen lässt. Dazu musste ich zusammen mit Mateo einen kleinen Conflict lösen, denn wir haben uns gegenseitig die Namen der Variabeln und Funktionen verändert, schlussendlich haben wir es lösen können und der Code funktioniert.
 
 ## Robin
@@ -73,7 +73,7 @@ Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwisc
 - [X] HomePage dynamisch anpassbar machen.
 - [X] Globales "umstyling" z.b. Farben ändern.
 
-## Zusammenfassung
+### Zusammenfassung
 Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieht wenn man das Fenster kleiner bzw. grösser macht. Danach habe ich Input für morsecode und output für die Signlanguage erstellt. Bei der Signlanguage werden auch schon Buchstaben ausgegeben. Zuletzt habe ich noch ein kleines Umstyling vorgenommen. Ich habe die Farben von Blau auf ein Grün gewechselt.
 
 
