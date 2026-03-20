@@ -24,6 +24,7 @@ HAND_CONNECTIONS = [
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "hand_landmarker.task")
 ABSOLUTE_CINEMA_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "Absolute_Cinema.png")
 GORILLA_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "Gorilla_MiddleFinger.png")
+NERD_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "Nerd_Meme.png")
 
 
 class MemeMovementTestFrame(customtkinter.CTkFrame):
@@ -41,6 +42,7 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
         )
         self.absolute_cinema_image_rgb = None
         self.gorilla_image_rgb = None
+        self.nerd_image_rgb = None
 
         if os.path.exists(ABSOLUTE_CINEMA_IMAGE_PATH):
             meme_bgr = cv2.imread(ABSOLUTE_CINEMA_IMAGE_PATH)
@@ -51,6 +53,11 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
             gorilla_bgr = cv2.imread(GORILLA_IMAGE_PATH)
             if gorilla_bgr is not None:
                 self.gorilla_image_rgb = cv2.cvtColor(gorilla_bgr, cv2.COLOR_BGR2RGB)
+
+        if os.path.exists(NERD_IMAGE_PATH):
+            nerd_bgr = cv2.imread(NERD_IMAGE_PATH)
+            if nerd_bgr is not None:
+                self.nerd_image_rgb = cv2.cvtColor(nerd_bgr, cv2.COLOR_BGR2RGB)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
@@ -208,6 +215,24 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
 
         return False
 
+    def _is_index_finger_pose(self, hand_landmarks):
+        index_up = hand_landmarks[8].y < hand_landmarks[6].y
+        middle_down = hand_landmarks[12].y > hand_landmarks[10].y
+        ring_down = hand_landmarks[16].y > hand_landmarks[14].y
+        pinky_down = hand_landmarks[20].y > hand_landmarks[18].y
+
+        return index_up and middle_down and ring_down and pinky_down
+
+    def _detect_index_finger(self, detection_result):
+        if not detection_result.hand_landmarks:
+            return False
+
+        for hand_landmarks in detection_result.hand_landmarks:
+            if self._is_index_finger_pose(hand_landmarks):
+                return True
+
+        return False
+
     def _draw_landmarks(self, rgb_image, detection_result):
         if not detection_result.hand_landmarks:
             return rgb_image
@@ -281,10 +306,14 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
 
             is_cinema_pose = self._detect_absolute_cinema(result, face_box)
             is_middle_finger = self._detect_middle_finger(result)
+            is_index_finger = self._detect_index_finger(result)
 
             if is_middle_finger:
                 self.status_label.configure(text="GORILLA MODE", text_color="#f97316")
                 frame_rgb = self._overlay_meme(frame_rgb, self.gorilla_image_rgb)
+            elif is_index_finger:
+                self.status_label.configure(text="NERD MODE", text_color="#60a5fa")
+                frame_rgb = self._overlay_meme(frame_rgb, self.nerd_image_rgb)
             elif is_cinema_pose:
                 self.status_label.configure(text="ABSOLUTE CINEMA", text_color="#facc15")
                 frame_rgb = self._overlay_meme(frame_rgb, self.absolute_cinema_image_rgb)
