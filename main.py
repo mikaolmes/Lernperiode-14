@@ -70,7 +70,7 @@ class MainMenuFrame(ctk.CTkFrame):
 
         self.button3 = ctk.CTkButton(
             self,
-            text="Meme Movement Test",
+            text="Meme Movement Test (3)",
             font=("Roboto", 22, "bold"),
             height=80,
             width=400,
@@ -83,6 +83,7 @@ class MainMenuFrame(ctk.CTkFrame):
         # Ziffern-Hotkeys für das Menü
         master.bind("1", lambda e: master.switch_frame(CameraFrame))
         master.bind("2", lambda e: master.switch_frame(MorseCodeFrame))
+        master.bind("3", lambda e: master.switch_frame(MemeMovementTestFrame))
 
 if __name__ == "__main__":
     app = MainApp()

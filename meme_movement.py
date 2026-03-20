@@ -82,6 +82,12 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
         customtkinter.CTkButton(button_frame, text="Stop Camera", command=self.stop_camera).pack(side="left", padx=8)
         customtkinter.CTkButton(button_frame, text="Zurück", command=self.go_back).pack(side="left", padx=8)
 
+        self.master.bind("<space>", lambda e: self.toggle_camera())
+
+    def toggle_camera(self):
+        if self.cam is None: self.start_camera()
+        else: self.stop_camera()
+
     def start_camera(self):
         self.cam = cv2.VideoCapture(0)
         self.frame_timestamp_ms = 0
