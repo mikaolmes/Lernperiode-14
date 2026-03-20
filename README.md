@@ -86,7 +86,8 @@ Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieh
 ## Mateo
 
 - [ ] Implementierung Tracking Absolute Cinema
-- [ ] Implementierung bewegungs dings für 67 meme 
+- [ ] Implementierung middle finger (gorilla)
+- [ ] Implementierung bewegungs dings für 67 meme (wenn genug zeit) 
 
 ## Mika
 - [ ] Logik: Download funktion hinzufügen, sodass man eine .txt Datei mit den Übersetzungen herunterlädt.

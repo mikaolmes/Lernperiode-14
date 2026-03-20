@@ -22,7 +22,8 @@ HAND_CONNECTIONS = [
 ]
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "hand_landmarker.task")
-MEME_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "Absolute_Cinema.png")
+ABSOLUTE_CINEMA_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "Absolute_Cinema.png")
+GORILLA_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "Gorilla_MiddleFinger.png")
 
 
 class MemeMovementTestFrame(customtkinter.CTkFrame):
@@ -38,12 +39,18 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
         self.face_detector = cv2.CascadeClassifier(
             os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_default.xml")
         )
-        self.meme_image_rgb = None
+        self.absolute_cinema_image_rgb = None
+        self.gorilla_image_rgb = None
 
-        if os.path.exists(MEME_IMAGE_PATH):
-            meme_bgr = cv2.imread(MEME_IMAGE_PATH)
+        if os.path.exists(ABSOLUTE_CINEMA_IMAGE_PATH):
+            meme_bgr = cv2.imread(ABSOLUTE_CINEMA_IMAGE_PATH)
             if meme_bgr is not None:
-                self.meme_image_rgb = cv2.cvtColor(meme_bgr, cv2.COLOR_BGR2RGB)
+                self.absolute_cinema_image_rgb = cv2.cvtColor(meme_bgr, cv2.COLOR_BGR2RGB)
+
+        if os.path.exists(GORILLA_IMAGE_PATH):
+            gorilla_bgr = cv2.imread(GORILLA_IMAGE_PATH)
+            if gorilla_bgr is not None:
+                self.gorilla_image_rgb = cv2.cvtColor(gorilla_bgr, cv2.COLOR_BGR2RGB)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
@@ -189,6 +196,24 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
 
         return left_ok and right_ok
 
+    def _is_middle_finger_pose(self, hand_landmarks):
+        middle_up = hand_landmarks[12].y < hand_landmarks[10].y
+        index_down = hand_landmarks[8].y > hand_landmarks[6].y
+        ring_down = hand_landmarks[16].y > hand_landmarks[14].y
+        pinky_down = hand_landmarks[20].y > hand_landmarks[18].y
+
+        return middle_up and index_down and ring_down and pinky_down
+
+    def _detect_middle_finger(self, detection_result):
+        if not detection_result.hand_landmarks:
+            return False
+
+        for hand_landmarks in detection_result.hand_landmarks:
+            if self._is_middle_finger_pose(hand_landmarks):
+                return True
+
+        return False
+
     def _draw_landmarks(self, rgb_image, detection_result):
         if not detection_result.hand_landmarks:
             return rgb_image
@@ -208,16 +233,16 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
 
         return rgb_image
 
-    def _overlay_meme(self, frame_rgb):
-        if self.meme_image_rgb is None:
+    def _overlay_meme(self, frame_rgb, meme_image_rgb):
+        if meme_image_rgb is None:
             return frame_rgb
 
         frame_h, frame_w, _ = frame_rgb.shape
         target_w = min(360, frame_w - 20)
-        aspect = self.meme_image_rgb.shape[0] / self.meme_image_rgb.shape[1]
+        aspect = meme_image_rgb.shape[0] / meme_image_rgb.shape[1]
         target_h = int(target_w * aspect)
 
-        resized_meme = cv2.resize(self.meme_image_rgb, (target_w, target_h))
+        resized_meme = cv2.resize(meme_image_rgb, (target_w, target_h))
 
         x_start = (frame_w - target_w) // 2
         y_start = 10
@@ -261,10 +286,14 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
                 self.status_label.configure(text="Face not detected", text_color="#f87171")
 
             is_cinema_pose = self._detect_absolute_cinema(result, face_box)
+            is_middle_finger = self._detect_middle_finger(result)
 
-            if is_cinema_pose:
+            if is_middle_finger:
+                self.status_label.configure(text="GORILLA MODE", text_color="#f97316")
+                frame_rgb = self._overlay_meme(frame_rgb, self.gorilla_image_rgb)
+            elif is_cinema_pose:
                 self.status_label.configure(text="ABSOLUTE CINEMA", text_color="#facc15")
-                frame_rgb = self._overlay_meme(frame_rgb)
+                frame_rgb = self._overlay_meme(frame_rgb, self.absolute_cinema_image_rgb)
             else:
                 if face_box:
                     self.gesture_start_time = None
