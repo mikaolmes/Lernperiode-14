@@ -89,10 +89,11 @@ Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieh
 - [ ] 
 
 ## Mika
-- [ ] Logik: Implementierung einer Funktion, die erkannte Gebärden oder Morse-Texte mit Zeitstempel in einer history.txt oder history.json speichert.
-- [ ] UI: Einbindung eines "Verlauf löschen"-Buttons und einer scrollbaren Liste (CTkScrollableFrame) in der main.py oder auf einer separaten "History"-Seite.
+- [ ] Logik: Download funktion hinzufügen, sodass man eine .txt Datei mit den Übersetzungen herunterlädt.
+- [ ] UI: Einbindung einer "Progress-Bar" für die drei Sekunden, damit man sieht wie schnell das funktioniert. Dazu einen "Fast-Mode"
 - [X] Hotkeys: Bindung von Tasten (z. B. ESC für Zurück, SPACE für Start/Stop Kamera), damit man die Maus weniger nutzen muss.
 - [X] Präsentation vorbereiten
+
 
 ## Robin
 
