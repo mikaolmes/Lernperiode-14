@@ -22,6 +22,7 @@ HAND_CONNECTIONS = [
 ]
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "hand_landmarker.task")
+MEME_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "Absolute_Cinema.png")
 
 
 class MemeMovementTestFrame(customtkinter.CTkFrame):
@@ -37,6 +38,12 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
         self.face_detector = cv2.CascadeClassifier(
             os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_default.xml")
         )
+        self.meme_image_rgb = None
+
+        if os.path.exists(MEME_IMAGE_PATH):
+            meme_bgr = cv2.imread(MEME_IMAGE_PATH)
+            if meme_bgr is not None:
+                self.meme_image_rgb = cv2.cvtColor(meme_bgr, cv2.COLOR_BGR2RGB)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
@@ -195,6 +202,29 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
 
         return rgb_image
 
+    def _overlay_meme(self, frame_rgb):
+        if self.meme_image_rgb is None:
+            return frame_rgb
+
+        frame_h, frame_w, _ = frame_rgb.shape
+        target_w = min(360, frame_w - 20)
+        aspect = self.meme_image_rgb.shape[0] / self.meme_image_rgb.shape[1]
+        target_h = int(target_w * aspect)
+
+        resized_meme = cv2.resize(self.meme_image_rgb, (target_w, target_h))
+
+        x_start = (frame_w - target_w) // 2
+        y_start = 10
+        y_end = min(frame_h, y_start + target_h)
+        x_end = x_start + target_w
+
+        overlay_h = y_end - y_start
+        if overlay_h <= 0:
+            return frame_rgb
+
+        frame_rgb[y_start:y_end, x_start:x_end] = resized_meme[:overlay_h, :target_w]
+        return frame_rgb
+
     def update_frame(self):
         if not (self.cam and self.cam.isOpened()):
             return
@@ -228,16 +258,7 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
 
             if is_cinema_pose:
                 self.status_label.configure(text="ABSOLUTE CINEMA", text_color="#facc15")
-                cv2.putText(
-                    frame_rgb,
-                    "ABSOLUTE CINEMA",
-                    (20, 50),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    1.2,
-                    (255, 220, 0),
-                    3,
-                    cv2.LINE_AA
-                )
+                frame_rgb = self._overlay_meme(frame_rgb)
             else:
                 if face_box:
                     self.gesture_start_time = None
