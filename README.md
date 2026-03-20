@@ -6,6 +6,8 @@ In dieser Lernperiode werden wir ein fiktives Startup führen. Unsere Konkurrent
 
 <img height="200" alt="image" src="https://github.com/user-attachments/assets/aba0faad-29da-4d34-b701-444ea54c24a6" />
 
+<br><br>
+
 # 20.02.2026
 
 Um es zum laufen zu bringen müssen Sie customkinter installieren
@@ -26,6 +28,7 @@ Für die Kamera installieren sie opencv
 
 📄 Siehe [FINGER_COUNTING.md](FINGER_COUNTING.md) für Details und wie Teammitglieder es nutzen können!
 
+<br><br>
 
 # 27.02.2026
 ## Mateo
@@ -60,6 +63,8 @@ Heute habe ich eine kleine Home Page erstellt, die einen auswählen lässt zwisc
 - [ ] Funktion implementieren, um übersetzte Texte mit Zeitstempel in einer `history.txt` zu speichern.
 - [X] Schnittstellen-Funktionen definieren, damit Mikas UI die Übersetzungs-Logik einfach aufrufen kann.
 
+<br><br>
+
 # 06.03.2026
 
 ## Mateo
@@ -80,6 +85,8 @@ Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieh
 ## Robin
 
 ## Alexander
+
+<br><br>
 
 # 20.03.2026
 
@@ -119,5 +126,6 @@ Lösung -> Auf Web (mit neuer erstellung des Projektes neu möglich)
 - [ ] Implementierung Reaktion Meme Geste
 - [ ] Anti-spam system
 
+<br><br>
 
 # 27.03
