@@ -131,6 +131,12 @@ Lösung -> Auf Web (mit neuer erstellung des Projektes neu möglich)
 # 27.03.2026
 
 ## Mika
+- [ ] Logik: Download funktion hinzufügen, sodass man eine .txt Datei mit den Übersetzungen herunterlädt.
+- [ ] Settings-Menu, um die Hotkeys zu erklären und andere wichtige Hinweise
+- [ ] Weitere Hotkey erstellen die mit dem Settings-Menu funktioniert
+- [ ] Morsecode übersetzer mit Lichtverhältnissen erstellen, Logik
+
+
 ## Mateo
 - [ ] Implementierung movemement Tracker
 - [ ] Verbesserung der hand tracking da aus manchen winkeln es nicht erkennt
