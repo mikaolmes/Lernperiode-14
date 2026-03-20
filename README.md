@@ -106,6 +106,7 @@ Umgehung Fehler -> started nicht in ios Expo app (Time out).
 <br><br>
 
 <img width="200" alt="image" src="https://github.com/user-attachments/assets/9d293195-3f30-4839-89a7-de862192849b" />
+<img width="200" alt="image" src="https://github.com/user-attachments/assets/a8d6e8ba-b100-4710-8361-a1416b74839c" />
 
 <br><br>
 
