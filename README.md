@@ -103,6 +103,12 @@ Umgehung Fehler -> started nicht in ios Expo app (Time out).
 - [ ] Pages Home und About vom alten js Code im neuen React umschreiben
 - [ ] Alternativen falls Expo App immer noch nicht funktioniert, finden
 
+<br><br>
+
+<img width="200" alt="image" src="https://github.com/user-attachments/assets/9d293195-3f30-4839-89a7-de862192849b" />
+
+<br><br>
+
 **Epilepsie Warnung**<br>
 ![MorseTool](https://github.com/user-attachments/assets/0a399c92-b41c-4455-895c-1ef78d51473e)
 
