@@ -102,6 +102,9 @@ Heute habe ich zuerst die Homepage dynamisch angepasst, sodass es besser aussieh
 - [X] Hotkeys: Bindung von Tasten (z. B. ESC für Zurück, SPACE für Start/Stop Kamera), damit man die Maus weniger nutzen muss.
 - [X] Präsentation vorbereiten
 
+Heute habe ich Hotkeys erstellt, damit man schneller im Programm umgehen kann ohne die Maus zu benutzten. Dazu habe ich einen Fast mode erstellt und eine Progressbar, die visualisiert, wie lange man den Buchstaben noch halten muss. 
+
+
 
 ## Robin
 Umgehung Fehler -> started nicht in ios Expo app (Time out).
