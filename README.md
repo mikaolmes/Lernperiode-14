@@ -118,7 +118,7 @@ Umgehung Fehler -> started nicht in ios Expo app (Time out).
 <br><br>
 
 Lösung -> Auf Web (mit neuer erstellung des Projektes neu möglich)
-**Epilepsie Warnung**<br>
+<br>**Epilepsie Warnung**<br>
 ![MorseTool](https://github.com/user-attachments/assets/0a399c92-b41c-4455-895c-1ef78d51473e)
 
 
