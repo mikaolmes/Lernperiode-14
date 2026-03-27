@@ -5,6 +5,7 @@ import mediapipe as mp  # MediaPipe für Handerkennung
 from mediapipe.tasks.python import vision
 import os
 import time
+from tkinter import filedialog
 
 # Import sign language letter recognizer
 from sign_recognizer import SignLanguageRecognizer
@@ -117,7 +118,7 @@ class CameraFrame(customtkinter.CTkFrame):
         self.sentence_textbox.grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
         self.sentence_textbox.configure(state="disabled")
         
-        # --- Progress Bar (Neu) ---
+        # --- Progress Bar ---
         self.progress_bar = customtkinter.CTkProgressBar(right_panel, width=200)
         self.progress_bar.grid(row=2, column=0, pady=10, padx=10)
         self.progress_bar.set(0)
@@ -125,9 +126,10 @@ class CameraFrame(customtkinter.CTkFrame):
         right_btn_frame = customtkinter.CTkFrame(right_panel, fg_color="transparent")
         right_btn_frame.grid(row=3, column=0, pady=(5, 10))
 
-        customtkinter.CTkButton(right_btn_frame, text="Space", width=70, command=self.add_space).pack(side="left", padx=2)
-        customtkinter.CTkButton(right_btn_frame, text="Copy (Ctrl+C)", width=70, command=self.copy_to_clipboard).pack(side="left", padx=2)
-        customtkinter.CTkButton(right_btn_frame, text="Clear", width=70, fg_color="#dc2626", hover_color="#b91c1c", command=self.clear_sentence).pack(side="left", padx=2)
+        customtkinter.CTkButton(right_btn_frame, text="Space", width=60, command=self.add_space).pack(side="left", padx=2)
+        customtkinter.CTkButton(right_btn_frame, text="Copy", width=60, command=self.copy_to_clipboard).pack(side="left", padx=2)
+        customtkinter.CTkButton(right_btn_frame, text="DL", width=50, command=self.download_history).pack(side="left", padx=2)
+        customtkinter.CTkButton(right_btn_frame, text="Clear", width=60, fg_color="#dc2626", hover_color="#b91c1c", command=self.clear_sentence).pack(side="left", padx=2)
 
         self.confirmed_hint = customtkinter.CTkLabel(
             right_panel,
@@ -159,11 +161,35 @@ class CameraFrame(customtkinter.CTkFrame):
         self.master.bind("<space>", lambda e: self.toggle_camera())
         self.master.bind("<Control-c>", lambda e: self.copy_to_clipboard())
         self.master.bind("c", lambda e: self.clear_sentence())
-        self.master.bind("f", lambda e: self.toggle_fast_mode()) # Hotkey für Fast Mode
+        self.master.bind("f", lambda e: self.toggle_fast_mode())
+        self.master.bind("d", lambda e: self.download_history())
 
     # ================================
-    # Fast Mode Toggle
+    # Logik: Download Funktion
     # ================================
+    def download_history(self):
+        text_to_save = self.sentence_history.strip()
+        if not text_to_save:
+            self.confirmed_hint.configure(text="Nichts zum Speichern!", text_color="#dc2626")
+            return
+
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".txt",
+            filetypes=[("Textdateien", "*.txt"), ("Alle Dateien", "*.*")],
+            title="Übersetzung speichern",
+            initialfile="uebersetzung.txt"
+        )
+
+        if file_path:
+            try:
+                with open(file_path, "w", encoding="utf-8") as file:
+                    file.write("--- Gebärdensprache Protokoll ---\n")
+                    file.write(f"Datum: {time.strftime('%d.%m.%Y %H:%M:%S')}\n\n")
+                    file.write(text_to_save)
+                self.confirmed_hint.configure(text="Datei gespeichert!", text_color="#10b981")
+            except Exception as e:
+                self.confirmed_hint.configure(text=f"Fehler: {e}", text_color="#dc2626")
+
     def toggle_fast_mode(self, event=None):
         if self.current_confirm_time == self.time_normal:
             self.current_confirm_time = self.time_fast
@@ -171,12 +197,8 @@ class CameraFrame(customtkinter.CTkFrame):
         else:
             self.current_confirm_time = self.time_normal
             self.fast_mode_btn.configure(text="Fast Mode: OFF", fg_color="#333333", text_color="white")
-        
         self.confirmed_hint.configure(text=f"Halte ein Zeichen {self.current_confirm_time}s lang")
 
-    # ================================
-    # Sentence helpers
-    # ================================
     def _update_sentence_display(self):
         self.sentence_textbox.configure(state="normal")
         self.sentence_textbox.delete("1.0", "end")
@@ -195,9 +217,6 @@ class CameraFrame(customtkinter.CTkFrame):
         self.confirmed_hint.configure(text="Satz gelöscht", text_color="#dc2626")
         self.after(1000, lambda: self.confirmed_hint.configure(text=f"Halte ein Zeichen {self.current_confirm_time}s lang", text_color="#64748b"))
 
-    # ================================
-    # Kamera Logik
-    # ================================
     def toggle_camera(self):
         if self.cam is None: self.start_camera()
         else: self.stop_camera()
@@ -237,29 +256,12 @@ class CameraFrame(customtkinter.CTkFrame):
         if detection_result.hand_landmarks:
             h, w, _ = rgb_image.shape
             for hand_idx, hand_landmarks in enumerate(detection_result.hand_landmarks):
-                # Draw connections first (so they appear behind the points)
                 for connection in HAND_CONNECTIONS:
                     start = hand_landmarks[connection[0]]
                     end = hand_landmarks[connection[1]]
-                    start_pos = (int(start.x * w), int(start.y * h))
-                    end_pos = (int(end.x * w), int(end.y * h))
-                    cv2.line(rgb_image, start_pos, end_pos, (0, 255, 0), 2)
-                
-                # Draw hand landmarks/points
+                    cv2.line(rgb_image, (int(start.x * w), int(start.y * h)), (int(end.x * w), int(end.y * h)), (0, 255, 0), 2)
                 for idx, landmark in enumerate(hand_landmarks):
-                    x = int(landmark.x * w)
-                    y = int(landmark.y * h)
-                    # Wrist (0) in larger circle, others in smaller
-                    radius = 5 if idx == 0 else 3
-                    color = (255, 100, 100) if idx == 0 else (0, 255, 255)  # Red for wrist, cyan for others
-                    cv2.circle(rgb_image, (x, y), radius, color, -1)
-                    
-                # Draw hand confidence scores if available
-                if detection_result.handedness and hand_idx < len(detection_result.handedness):
-                    handedness = detection_result.handedness[hand_idx][0].category_name
-                    confidence = detection_result.handedness[hand_idx][0].score
-                    cv2.putText(rgb_image, f"{handedness} {confidence:.2f}", (10, 30 + hand_idx * 25),
-                               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                    cv2.circle(rgb_image, (int(landmark.x * w), int(landmark.y * h)), 3, (0, 255, 255), -1)
         return rgb_image
 
     def update_frame(self):
@@ -281,7 +283,6 @@ class CameraFrame(customtkinter.CTkFrame):
                         if recognized_text == self.last_sign:
                             if self.sign_start_time:
                                 elapsed = time.time() - self.sign_start_time
-                                # Progress Bar berechnen
                                 progress = min(1.0, elapsed / self.current_confirm_time)
                                 self.progress_bar.set(progress)
                                 
