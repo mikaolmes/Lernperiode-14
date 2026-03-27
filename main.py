@@ -85,10 +85,11 @@ class MainMenuFrame(ctk.CTkFrame):
         master.bind("1", lambda e: master.switch_frame(CameraFrame))
         master.bind("2", lambda e: master.switch_frame(MorseCodeFrame))
         master.bind("3", lambda e: master.switch_frame(MemeMovementTestFrame))
+        master.bind("4", lambda e: master.switch_frame(SettingsFrame))
 
         self.button4 = ctk.CTkButton(
             self,
-            text="Settings",
+            text="Settings (4)",
             font=("Roboto", 18, "bold"),
             height=50,
             width=200,
