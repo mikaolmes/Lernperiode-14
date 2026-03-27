@@ -156,7 +156,7 @@ Heute habe ich zuerst das Settings-menu erstellt, und die Hotkeys erklärt, soda
 ## Alex
 - [X] Kamera-Invertierung implementiert
 - [X] neu page für Gebärdesprache Alphabet
-- [ ] button erstellen und Alphabet hinzufügen
+- [X] button erstellen und Alphabet hinzufügen
 - [ ] Bilder suchen/machen
 
 
@@ -175,3 +175,6 @@ Heute habe ich zuerst das Settings-menu erstellt, und die Hotkeys erklärt, soda
 ## Robin
 
 ## Alex
+- [ ] Bilder suchen/machen
+- [ ] Buchstaben löschen können
+- [ ] 
