@@ -1,7 +1,10 @@
 import os
+import time
+import math
 import cv2
 import customtkinter
 import mediapipe as mp
+from collections import deque
 from PIL import Image, ImageTk
 
 from finger_counter import FingerCounter
@@ -25,6 +28,8 @@ MODEL_PATH = os.path.join(os.path.dirname(__file__), "hand_landmarker.task")
 ABSOLUTE_CINEMA_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "Absolute_Cinema.png")
 GORILLA_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "Gorilla_MiddleFinger.png")
 NERD_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "Nerd_Meme.png")
+BOI_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "boiii.png")
+SIX_SEVEN_IMAGE_PATH = os.path.join(os.path.dirname(__file__), "memes", "67_meme.png")
 
 
 class MemeMovementTestFrame(customtkinter.CTkFrame):
@@ -43,6 +48,10 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
         self.absolute_cinema_image_rgb = None
         self.gorilla_image_rgb = None
         self.nerd_image_rgb = None
+        self.boi_image_rgb = None
+        self.six_seven_image_rgb = None
+        self.movement_history = deque(maxlen=75)
+        self.last_dynamic_trigger_time = 0.0
 
         if os.path.exists(ABSOLUTE_CINEMA_IMAGE_PATH):
             meme_bgr = cv2.imread(ABSOLUTE_CINEMA_IMAGE_PATH)
@@ -58,6 +67,16 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
             nerd_bgr = cv2.imread(NERD_IMAGE_PATH)
             if nerd_bgr is not None:
                 self.nerd_image_rgb = cv2.cvtColor(nerd_bgr, cv2.COLOR_BGR2RGB)
+
+        if os.path.exists(BOI_IMAGE_PATH):
+            boi_bgr = cv2.imread(BOI_IMAGE_PATH)
+            if boi_bgr is not None:
+                self.boi_image_rgb = cv2.cvtColor(boi_bgr, cv2.COLOR_BGR2RGB)
+
+        if os.path.exists(SIX_SEVEN_IMAGE_PATH):
+            six_seven_bgr = cv2.imread(SIX_SEVEN_IMAGE_PATH)
+            if six_seven_bgr is not None:
+                self.six_seven_image_rgb = cv2.cvtColor(six_seven_bgr, cv2.COLOR_BGR2RGB)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
@@ -83,7 +102,7 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
 
         self.hint_label = customtkinter.CTkLabel(
             self,
-            text="Example trigger: both hands visible, open, near left/right side of head",
+            text="Triggers: open palms near head | double point camera | dynamic 6->7 movement",
             font=("Roboto", 12),
             text_color="#64748b"
         )
@@ -96,6 +115,14 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
         customtkinter.CTkButton(button_frame, text="Stop Camera", command=self.stop_camera).pack(side="left", padx=8)
         customtkinter.CTkButton(button_frame, text="Zurück", command=self.go_back).pack(side="left", padx=8)
 
+        self.mode_var = customtkinter.StringVar(value="Static Memes")
+        self.mode_selector = customtkinter.CTkSegmentedButton(
+            self,
+            values=["Static Memes", "Dynamic Memes (67)"],
+            variable=self.mode_var
+        )
+        self.mode_selector.grid(row=5, column=0, pady=(0, 10))
+
         self.master.bind("<space>", lambda e: self.toggle_camera())
 
     def toggle_camera(self):
@@ -105,6 +132,8 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
     def start_camera(self):
         self.cam = cv2.VideoCapture(0)
         self.frame_timestamp_ms = 0
+        self.movement_history.clear()
+        self.last_dynamic_trigger_time = 0.0
 
         options = HandLandmarkerOptions(
             base_options=BaseOptions(model_asset_path=MODEL_PATH),
@@ -128,6 +157,7 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
             self.landmarker = None
 
         self.gesture_start_time = None
+        self.movement_history.clear()
 
     def _get_face_box(self, frame_rgb):
         gray = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2GRAY)
@@ -239,6 +269,166 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
 
         return False
 
+    def _squared_distance(self, p1, p2):
+        dx = p1.x - p2.x
+        dy = p1.y - p2.y
+        dz = p1.z - p2.z
+        return dx * dx + dy * dy + dz * dz
+
+    def _is_finger_extended(self, hand_landmarks, tip_idx, pip_idx, mcp_idx):
+        tip = hand_landmarks[tip_idx]
+        pip = hand_landmarks[pip_idx]
+        mcp = hand_landmarks[mcp_idx]
+
+        tip_to_mcp = self._squared_distance(tip, mcp)
+        pip_to_mcp = self._squared_distance(pip, mcp)
+        return tip_to_mcp > (pip_to_mcp * 1.15)
+
+    def _is_finger_curled(self, hand_landmarks, tip_idx, pip_idx, mcp_idx):
+        tip = hand_landmarks[tip_idx]
+        pip = hand_landmarks[pip_idx]
+        mcp = hand_landmarks[mcp_idx]
+
+        tip_to_mcp = self._squared_distance(tip, mcp)
+        pip_to_mcp = self._squared_distance(pip, mcp)
+        return tip_to_mcp < (pip_to_mcp * 1.05)
+
+    def _is_pointing_to_camera(self, hand_landmarks):
+        # Instead of strict index pointing, we require an open palm.
+        if not self._is_open_palm(hand_landmarks):
+            return False
+
+        # Check if hand is facing generally forward (fingertips closer to camera than base)
+        index_tip = hand_landmarks[8]
+        index_mcp = hand_landmarks[5]
+        
+        return (index_mcp.z - index_tip.z) > 0.015
+
+    def _detect_double_point_camera(self, detection_result, face_box):
+        if not detection_result.hand_landmarks or len(detection_result.hand_landmarks) < 2:
+            return False
+
+        pointing_hands = [
+            hand_landmarks for hand_landmarks in detection_result.hand_landmarks
+            if self._is_pointing_to_camera(hand_landmarks)
+        ]
+
+        if len(pointing_hands) < 2:
+            return False
+
+        # If absolute cinema would trigger, don't trigger BOI.
+        if self._detect_absolute_cinema(detection_result, face_box):
+            return False
+
+        hand_depths = []
+        for hand_landmarks in pointing_hands[:2]:
+            avg_depth = sum(point.z for point in hand_landmarks) / len(hand_landmarks)
+            hand_depths.append(avg_depth)
+
+        # One hand should be slightly in front of the other
+        depth_difference = abs(hand_depths[0] - hand_depths[1])
+        return depth_difference >= 0.03
+
+    def _get_handed_finger_counts(self, detection_result):
+        left_count = 0
+        right_count = 0
+        centers = []
+
+        if not detection_result.hand_landmarks:
+            return left_count, right_count, centers
+
+        for idx, hand_landmarks in enumerate(detection_result.hand_landmarks):
+            handedness = "Right"
+            if detection_result.handedness and idx < len(detection_result.handedness):
+                handedness = detection_result.handedness[idx][0].category_name
+
+            finger_count = self.counter.count_fingers(hand_landmarks, handedness)
+            if handedness == "Left":
+                left_count = finger_count
+            else:
+                right_count = finger_count
+
+            centers.append(self._hand_center(hand_landmarks))
+
+        return left_count, right_count, centers
+
+    def _update_movement_history(self, detection_result):
+        now = time.time()
+        left_count, right_count, centers = self._get_handed_finger_counts(detection_result)
+
+        mean_x, mean_y = 0.5, 0.5
+        if centers:
+            mean_x = sum(point[0] for point in centers) / len(centers)
+            mean_y = sum(point[1] for point in centers) / len(centers)
+
+        sample = {
+            "time": now,
+            "left": left_count,
+            "right": right_count,
+            "total": left_count + right_count,
+            "hands": len(centers),
+            "x": mean_x,
+            "y": mean_y,
+        }
+        self.movement_history.append(sample)
+
+    def _window_mode(self, values):
+        if not values:
+            return None
+
+        return max(set(values), key=values.count)
+
+    def _path_length(self, samples):
+        if len(samples) < 2:
+            return 0.0
+
+        distance = 0.0
+        for i in range(1, len(samples)):
+            dx = samples[i]["x"] - samples[i - 1]["x"]
+            dy = samples[i]["y"] - samples[i - 1]["y"]
+            distance += (dx * dx + dy * dy) ** 0.5
+
+        return distance
+
+    def _detect_dynamic_six_seven(self):
+        now = time.time()
+        cooldown_s = 2.0
+        
+        # If we triggered recently, keep showing it for the cooldown duration
+        if now - self.last_dynamic_trigger_time < cooldown_s:
+            return True
+
+        history_window_s = 2.0
+        recent_samples = [
+            sample for sample in self.movement_history
+            if now - sample["time"] <= history_window_s
+        ]
+
+        if len(recent_samples) < 10:
+            return False
+
+        # Look for a clean sequence: showing 6 fingers, then showing 7 fingers
+        found_6 = False
+        found_6_then_7 = False
+        
+        for sample in recent_samples:
+            if sample["total"] == 6:
+                found_6 = True
+            elif sample["total"] == 7 and found_6:
+                found_6_then_7 = True
+                break
+
+        # Also require some basic hand movement during this sequence
+        movement_enough = self._path_length(recent_samples) >= 0.05
+
+        if found_6_then_7 and movement_enough:
+            self.last_dynamic_trigger_time = now
+            # Clear movement history so we don't double trigger immediately after cooldown
+            self.movement_history.clear()
+            return True
+
+        return False
+
     def _draw_landmarks(self, rgb_image, detection_result):
         if not detection_result.hand_landmarks:
             return rgb_image
@@ -281,6 +471,40 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
         frame_rgb[y_start:y_end, x_start:x_end] = resized_meme[:overlay_h, :target_w]
         return frame_rgb
 
+    def _draw_bouncing_numbers(self, frame_rgb):
+        frame_h, frame_w, _ = frame_rgb.shape
+        now = time.time()
+        
+        # Fast bounce calculation using sine wave
+        bounce_speed = 15.0 # How fast it moves
+        bounce_height = 40  # How far it moves up/down
+        
+        # Calculate Y offset based on time
+        y_offset_6 = int(math.sin(now * bounce_speed) * bounce_height)
+        y_offset_7 = int(math.sin(now * bounce_speed + math.pi) * bounce_height) # Opposite phase
+        
+        base_y = frame_h // 2
+        
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        font_scale = 5.0
+        thickness = 10
+        color = (255, 255, 255) # White
+        outline_color = (0, 0, 0) # Black outline
+        
+        # Draw "6" on the left
+        pos_6 = (50, base_y + y_offset_6)
+        cv2.putText(frame_rgb, "6", pos_6, font, font_scale, outline_color, thickness + 5, cv2.LINE_AA)
+        cv2.putText(frame_rgb, "6", pos_6, font, font_scale, color, thickness, cv2.LINE_AA)
+        
+        # Draw "7" on the right
+        # Need text size to properly align "7" on the right side
+        text_size_7, _ = cv2.getTextSize("7", font, font_scale, thickness)
+        pos_7 = (frame_w - 50 - text_size_7[0], base_y + y_offset_7)
+        cv2.putText(frame_rgb, "7", pos_7, font, font_scale, outline_color, thickness + 5, cv2.LINE_AA)
+        cv2.putText(frame_rgb, "7", pos_7, font, font_scale, color, thickness, cv2.LINE_AA)
+        
+        return frame_rgb
+
     def update_frame(self):
         if not (self.cam and self.cam.isOpened()):
             return
@@ -300,6 +524,7 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
             result = self.landmarker.detect_for_video(mp_image, self.frame_timestamp_ms)
             frame_rgb = self._draw_landmarks(frame_rgb, result)
             face_box = self._get_face_box(frame_rgb)
+            self._update_movement_history(result)
 
             if face_box:
                 h, w, _ = frame_rgb.shape
@@ -311,26 +536,41 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
                 self.gesture_start_time = None
                 self.status_label.configure(text="Face not detected", text_color="#f87171")
 
-            is_cinema_pose = self._detect_absolute_cinema(result, face_box)
-            is_middle_finger = self._detect_middle_finger(result)
-            is_index_finger = self._detect_index_finger(result)
-
-            if is_middle_finger:
-                self.status_label.configure(text="GORILLA MODE", text_color="#f97316")
-                frame_rgb = self._overlay_meme(frame_rgb, self.gorilla_image_rgb)
-            elif is_index_finger:
-                self.status_label.configure(text="NERD MODE", text_color="#60a5fa")
-                frame_rgb = self._overlay_meme(frame_rgb, self.nerd_image_rgb)
-            elif is_cinema_pose:
-                self.status_label.configure(text="ABSOLUTE CINEMA", text_color="#facc15")
-                frame_rgb = self._overlay_meme(frame_rgb, self.absolute_cinema_image_rgb)
+            # Check based on selected mode
+            if self.mode_var.get() == "Dynamic Memes (67)":
+                is_dynamic_six_seven = self._detect_dynamic_six_seven()
+                if is_dynamic_six_seven:
+                    self.status_label.configure(text="67 MOVEMENT", text_color="#22d3ee")
+                    frame_rgb = self._overlay_meme(frame_rgb, self.six_seven_image_rgb)
+                    frame_rgb = self._draw_bouncing_numbers(frame_rgb)
+                elif face_box:
+                    self.status_label.configure(text="Waiting for 6->7 movement...", text_color="#94a3b8")
             else:
-                if face_box:
-                    self.gesture_start_time = None
-                    self.status_label.configure(
-                        text="Show both open palms next to your head",
-                        text_color="#94a3b8"
-                    )
+                # Static Memes
+                is_cinema_pose = self._detect_absolute_cinema(result, face_box)
+                is_middle_finger = self._detect_middle_finger(result)
+                is_index_finger = self._detect_index_finger(result)
+                is_double_point_camera = self._detect_double_point_camera(result, face_box)
+
+                if is_double_point_camera:
+                    self.status_label.configure(text="BOI", text_color="#eab308")
+                    frame_rgb = self._overlay_meme(frame_rgb, self.boi_image_rgb)
+                elif is_middle_finger:
+                    self.status_label.configure(text="GORILLA MODE", text_color="#f97316")
+                    frame_rgb = self._overlay_meme(frame_rgb, self.gorilla_image_rgb)
+                elif is_index_finger:
+                    self.status_label.configure(text="NERD MODE", text_color="#60a5fa")
+                    frame_rgb = self._overlay_meme(frame_rgb, self.nerd_image_rgb)
+                elif is_cinema_pose:
+                    self.status_label.configure(text="ABSOLUTE CINEMA", text_color="#facc15")
+                    frame_rgb = self._overlay_meme(frame_rgb, self.absolute_cinema_image_rgb)
+                else:
+                    if face_box:
+                        self.gesture_start_time = None
+                        self.status_label.configure(
+                            text="Show both open palms next to your head",
+                            text_color="#94a3b8"
+                        )
 
         img = Image.fromarray(frame_rgb).resize((640, 480))
         tk_img = ImageTk.PhotoImage(img)
