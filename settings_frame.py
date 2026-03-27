@@ -27,6 +27,7 @@ class SettingsFrame(ctk.CTkFrame):
         self.add_hotkey_info("Strg + C", "Erkannten Text in Zwischenablage kopieren")
         self.add_hotkey_info("C", "Aktuellen Satz löschen")
         self.add_hotkey_info("1, 2, 3, 4", "Direktwahl der Tools im Menü")
+        self.add_hotkey_info("D", "Download der Übersetzung als Textdatei")
 
         # --- Back Button ---
         self.back_btn = ctk.CTkButton(
