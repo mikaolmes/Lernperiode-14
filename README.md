@@ -139,6 +139,8 @@ Lösung -> Auf Web (mit neuer erstellung des Projektes neu möglich)
 - [X] Weitere Hotkey erstellen die mit dem Settings-Menu funktioniert
 - [ ] Morsecode übersetzer mit Lichtverhältnissen erstellen, Logik
 
+Heute habe ich zuerst das Settings-menu erstellt, und die Hotkeys erklärt, sodass man die Hotkeys versteht. Danach habe ich weitre Hotkeys hinzugefügt, die mit dem Settings-Frame zu tun hatten. Danach habe ich noch eine Download to .txt Datei erstellt, sodass man seine Übersetzung herunterladen konnte. Danach habe ich auch dafür weitere Hotkeys erstellt und die Settings-Ansicht wiederrum aktualisiert.
+
 
 ## Mateo
 - [ ] Implementierung movemement Tracker
