@@ -217,7 +217,7 @@ class CameraFrame(customtkinter.CTkFrame):
             options = HandLandmarkerOptions(
                 base_options=BaseOptions(model_asset_path=MODEL_PATH),
                 running_mode=VisionRunningMode.VIDEO, num_hands=4,
-                min_hand_detection_confidence=0.5, min_hand_presence_confidence=0.5, min_tracking_confidence=0.5,
+                min_hand_detection_confidence=0.3, min_hand_presence_confidence=0.3, min_tracking_confidence=0.4,
             )
             self.landmarker = HandLandmarker.create_from_options(options)
             self.update_frame()
@@ -236,11 +236,30 @@ class CameraFrame(customtkinter.CTkFrame):
     def draw_landmarks_on_image(self, rgb_image, detection_result):
         if detection_result.hand_landmarks:
             h, w, _ = rgb_image.shape
-            for hand_landmarks in detection_result.hand_landmarks:
+            for hand_idx, hand_landmarks in enumerate(detection_result.hand_landmarks):
+                # Draw connections first (so they appear behind the points)
                 for connection in HAND_CONNECTIONS:
                     start = hand_landmarks[connection[0]]
                     end = hand_landmarks[connection[1]]
-                    cv2.line(rgb_image, (int(start.x * w), int(start.y * h)), (int(end.x * w), int(end.y * h)), (0, 255, 0), 2)
+                    start_pos = (int(start.x * w), int(start.y * h))
+                    end_pos = (int(end.x * w), int(end.y * h))
+                    cv2.line(rgb_image, start_pos, end_pos, (0, 255, 0), 2)
+                
+                # Draw hand landmarks/points
+                for idx, landmark in enumerate(hand_landmarks):
+                    x = int(landmark.x * w)
+                    y = int(landmark.y * h)
+                    # Wrist (0) in larger circle, others in smaller
+                    radius = 5 if idx == 0 else 3
+                    color = (255, 100, 100) if idx == 0 else (0, 255, 255)  # Red for wrist, cyan for others
+                    cv2.circle(rgb_image, (x, y), radius, color, -1)
+                    
+                # Draw hand confidence scores if available
+                if detection_result.handedness and hand_idx < len(detection_result.handedness):
+                    handedness = detection_result.handedness[hand_idx][0].category_name
+                    confidence = detection_result.handedness[hand_idx][0].score
+                    cv2.putText(rgb_image, f"{handedness} {confidence:.2f}", (10, 30 + hand_idx * 25),
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
         return rgb_image
 
     def update_frame(self):
