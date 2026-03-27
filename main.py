@@ -10,7 +10,7 @@ class MainApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Sign & Morse Translator Pro")
+        self.title("Sign & Morse Translator")
         self.geometry("800x800")
 
         self.grid_columnconfigure(0, weight=1)
