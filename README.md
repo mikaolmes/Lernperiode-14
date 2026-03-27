@@ -147,7 +147,7 @@ Lösung -> Auf Web (mit neuer erstellung des Projektes neu möglich)
       
 ## Robin
 - [ ] Sound Features für Morsecode App
-- [ ] Licht MorseCode Übersetzer in Main Python App implementieren (wenn Mika noch nicht fertig ist)
+- [x] Licht MorseCode Übersetzer in Main Python App implementieren 
 - [ ] ausbesserung UI Main Python App (Morse Code Sektor) -> hinzufügen einer Text Sektion  (Übersetztes Licht).
 - [ ] Sound MorseCode Übersetzter in Main Python App Implementieren
 
