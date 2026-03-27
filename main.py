@@ -3,6 +3,7 @@ from SignLanguage import CameraFrame
 from morsecode import MorseCodeFrame
 from meme_movement import MemeMovementTestFrame
 from settings_frame import SettingsFrame
+from alphabet_frame import AlphabetFrame
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green") 
