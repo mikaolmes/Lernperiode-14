@@ -142,7 +142,7 @@ Lösung -> Auf Web (mit neuer erstellung des Projektes neu möglich)
 
 ## Mateo
 - [ ] Implementierung movemement Tracker
-- [ ] Verbesserung der hand tracking da aus manchen winkeln es nicht erkennt
+- [x] Verbesserung der hand tracking da aus manchen winkeln es nicht erkennt
 
       
 ## Robin
