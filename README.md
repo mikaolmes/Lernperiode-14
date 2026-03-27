@@ -154,3 +154,5 @@ Lösung -> Auf Web (mit neuer erstellung des Projektes neu möglich)
 ## Alex
 - [X] Kamera-Invertierung implementiert
 - [X] neu page für Gebärdesprache Alphabet
+- [ ] button erstellen und Alphabet hinzufügen
+- [ ] Bilder suchen/machen
