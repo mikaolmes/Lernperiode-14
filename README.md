@@ -158,3 +158,20 @@ Heute habe ich zuerst das Settings-menu erstellt, und die Hotkeys erklärt, soda
 - [X] neu page für Gebärdesprache Alphabet
 - [ ] button erstellen und Alphabet hinzufügen
 - [ ] Bilder suchen/machen
+
+
+# 24.04.2026
+
+## Mika
+- [ ] Präzisions Indikator: Prozentsatz für die Sicherheit der Erkennung des Buchstabens.
+- [ ] Morsecode übersetzer mit Lichtverhältnissen erstellen, Logik
+- [ ] Morsecode-Alphabet als Liste hinzufügen als Hilfe für die Übersetzung
+
+## Mateo
+- [ ] 1 dynamic Meme und 2 static meme einfügen
+- [ ] Verbesserung movement detection für dynamic memes
+- [ ]
+
+## Robin
+
+## Alex
