@@ -2,6 +2,7 @@ import customtkinter as ctk
 from SignLanguage import CameraFrame
 from morsecode import MorseCodeFrame
 from meme_movement import MemeMovementTestFrame
+from settings_frame import SettingsFrame
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green") 
@@ -10,7 +11,7 @@ class MainApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Sign & Morse Translator Pro")
+        self.title("Sign & Morse Translator")
         self.geometry("800x800")
 
         self.grid_columnconfigure(0, weight=1)
@@ -38,12 +39,12 @@ class MainMenuFrame(ctk.CTkFrame):
         
         self.grid_columnconfigure(0, weight=1)
        
-        self.grid_rowconfigure((0, 1, 2, 3, 4), weight=1)
+        self.grid_rowconfigure((0, 1, 2, 3, 4, 5), weight=1)
         self.grid_rowconfigure((0, 1, 2, 3), weight=1)
 
         self.label = ctk.CTkLabel(
             self, 
-            text="Übersetzungs-Zentrale", 
+            text="Übersetzungs-Tool", 
             font=("Bahnschrift", 46, "bold"),
             text_color="#10b981"
         )
@@ -84,6 +85,20 @@ class MainMenuFrame(ctk.CTkFrame):
         master.bind("1", lambda e: master.switch_frame(CameraFrame))
         master.bind("2", lambda e: master.switch_frame(MorseCodeFrame))
         master.bind("3", lambda e: master.switch_frame(MemeMovementTestFrame))
+
+        self.button4 = ctk.CTkButton(
+            self,
+            text="Settings",
+            font=("Roboto", 18, "bold"),
+            height=50,
+            width=200,
+            corner_radius=15,
+            fg_color="#1f2937",
+            hover_color="#374151",
+            command=lambda:master.switch_frame(SettingsFrame)
+        )
+        self.button4.grid(row=5, column=0, pady=15)
+
 
 if __name__ == "__main__":
     app = MainApp()
