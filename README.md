@@ -152,5 +152,4 @@ Lösung -> Auf Web (mit neuer erstellung des Projektes neu möglich)
 - [ ] Sound MorseCode Übersetzter in Main Python App Implementieren
 
 ## Alex
-
-
+- [X] Kamera-Invertierung implementiert
