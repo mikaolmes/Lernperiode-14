@@ -135,7 +135,7 @@ Lösung -> Auf Web (mit neuer erstellung des Projektes neu möglich)
 
 ## Mika
 - [ ] Logik: Download funktion hinzufügen, sodass man eine .txt Datei mit den Übersetzungen herunterlädt.
-- [ ] Settings-Menu, um die Hotkeys zu erklären und andere wichtige Hinweise
+- [X] Settings-Menu, um die Hotkeys zu erklären und andere wichtige Hinweise
 - [ ] Weitere Hotkey erstellen die mit dem Settings-Menu funktioniert
 - [ ] Morsecode übersetzer mit Lichtverhältnissen erstellen, Logik
 
