@@ -1,6 +1,23 @@
 import customtkinter as ctk
-from PIL import Image
+import time
+import threading
 import os
+
+# Versuche winsound für Windows zu importieren (für den Ton)
+try:
+    import winsound
+    HAS_WINSOUND = True
+except ImportError:
+    HAS_WINSOUND = False
+
+# Das Morsecode-Wörterbuch (A-Z)
+MORSE_DICT = {
+    'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 
+    'F': '..-.', 'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 
+    'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 
+    'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 
+    'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..'
+}
 
 class MorseAL_Frame(ctk.CTkFrame):
     def __init__(self, master, go_back_callback):
@@ -14,7 +31,7 @@ class MorseAL_Frame(ctk.CTkFrame):
         # --- Titel ---
         self.label = ctk.CTkLabel(
             self, 
-            text="Gebärdensprache Alphabet", 
+            text="Morsecode Alphabet", 
             font=("Bahnschrift", 32, "bold"),
             text_color="#10b981"
         )
@@ -42,10 +59,8 @@ class MorseAL_Frame(ctk.CTkFrame):
         self.back_btn.grid(row=2, column=0, pady=20)
 
     def load_alphabet(self):
-        alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        image_folder = "alphabet_images" # Hier müssen deine Bilder rein
-
-        for index, letter in enumerate(alphabet):
+        # Wir gehen durch unser Wörterbuch statt durch einen normalen String
+        for index, (letter, morse_code) in enumerate(MORSE_DICT.items()):
             row = index // 4
             col = index % 4
 
@@ -53,24 +68,51 @@ class MorseAL_Frame(ctk.CTkFrame):
             char_card = ctk.CTkFrame(self.scroll_frame, fg_color="#2b2b2b", corner_radius=10)
             char_card.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
 
-            # Buchstabe als Text
-            l_label = ctk.CTkLabel(char_card, text=letter, font=("Arial", 20, "bold"))
-            l_label.pack(pady=5)
+            # Buchstabe als großer Text
+            l_label = ctk.CTkLabel(char_card, text=letter, font=("Arial", 28, "bold"))
+            l_label.pack(pady=(15, 5))
+
+            # --- Vorschlag 3: Visuelle Punkte und Striche ---
+            # Ein Container für die grafischen Morse-Zeichen
+            visual_frame = ctk.CTkFrame(char_card, fg_color="transparent")
+            visual_frame.pack(pady=10)
+
+            for symbol in morse_code:
+                if symbol == '.':
+                    # Zeichne einen Punkt (kleines Quadrat mit abgerundeten Ecken = Kreis)
+                    dot = ctk.CTkFrame(visual_frame, width=12, height=12, corner_radius=6, fg_color="#10b981")
+                    dot.pack(side="left", padx=3)
+                elif symbol == '-':
+                    # Zeichne einen Strich (breiteres Rechteck)
+                    dash = ctk.CTkFrame(visual_frame, width=35, height=12, corner_radius=6, fg_color="#10b981")
+                    dash.pack(side="left", padx=3)
+
+            # --- Vorschlag 4: Der Play Button ---
+            # Wir übergeben den jeweiligen Morsecode an unsere Abspiel-Funktion
+            play_btn = ctk.CTkButton(
+                char_card, 
+                text="▶ Play", 
+                width=80, 
+                fg_color="#3b82f6", 
+                hover_color="#2563eb",
+                command=lambda m=morse_code: self.play_audio_thread(m)
+            )
+            play_btn.pack(pady=(5, 15))
+
+    # --- Audio Funktionen ---
+    def play_audio_thread(self, morse_code):
+        # Startet den Ton in einem Hintergrund-Thread, damit die GUI nicht einfriert
+        thread = threading.Thread(target=self._play_morse_sound, args=(morse_code,))
+        thread.start()
+
+    def _play_morse_sound(self, morse_code):
+        dot_duration = 150  # Dauer eines Punktes in Millisekunden
+        dash_duration = dot_duration * 3 # Ein Strich ist 3x so lang wie ein Punkt
+        pause_duration = dot_duration # Pause zwischen den Signalen
+        frequency = 800 # Tonhöhe in Hertz
 
             # Bild laden
             img_path = os.path.join(os.path.dirname(__file__), image_folder, f"{letter}.jpg")
             
-            if os.path.exists(img_path):
-                try:
-                    pil_img = Image.open(img_path)
-                    ctk_img = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=(120, 120))
-                    img_display = ctk.CTkLabel(char_card, text="", image=ctk_img)
-                    img_display.pack(pady=5, padx=10)
-                except:
-                    self.show_placeholder(char_card)
-            else:
-                self.show_placeholder(char_card)
-
-    def show_placeholder(self, parent):
-        placeholder = ctk.CTkLabel(parent, text="Bild fehlt", text_color="gray", font=("Arial", 12))
-        placeholder.pack(pady=40, padx=10)
+            # Kurze Pause nach jedem Signal (damit sie nicht ineinander fließen)
+            time.sleep(pause_duration / 1000)
