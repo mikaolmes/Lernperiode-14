@@ -123,7 +123,26 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
         )
         self.mode_selector.grid(row=5, column=0, pady=(0, 10))
 
+        self.minigame_state = "IDLE"
+        self.minigame_start_time = 0
+        self.minigame_score = 0
+        self.minigame_last_side = 0
+
+        self.minigame_btn = customtkinter.CTkButton(
+            self, text="Start 67 Minigame", command=self.start_minigame,
+            fg_color="#8b5cf6", hover_color="#7c3aed"
+        )
+        self.minigame_btn.grid(row=6, column=0, pady=(0, 10))
+
         self.master.bind("<space>", lambda e: self.toggle_camera())
+
+    def start_minigame(self):
+        if not self.cam or not self.cam.isOpened():
+            self.start_camera()
+        self.minigame_state = "COUNTDOWN"
+        self.minigame_start_time = time.time()
+        self.minigame_score = 0
+        self.minigame_last_side = 0
 
     def toggle_camera(self):
         if self.cam is None: self.start_camera()
@@ -139,7 +158,7 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
             base_options=BaseOptions(model_asset_path=MODEL_PATH),
             running_mode=VisionRunningMode.VIDEO,
             num_hands=2,
-            min_hand_detection_confidence=0.5,
+            min_hand_detection_confidence=0.1,
             min_hand_presence_confidence=0.5,
             min_tracking_confidence=0.5,
         )
@@ -198,6 +217,15 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
         x_mean = sum(point.x for point in hand_landmarks) / len(hand_landmarks)
         y_mean = sum(point.y for point in hand_landmarks) / len(hand_landmarks)
         return x_mean, y_mean
+
+    def _hand_scale(self, hand_landmarks):
+        xs = [point.x for point in hand_landmarks]
+        ys = [point.y for point in hand_landmarks]
+
+        width = max(xs) - min(xs)
+        height = max(ys) - min(ys)
+        # A small floor avoids unstable division when tracking is noisy.
+        return max(0.05, (width * width + height * height) ** 0.5)
 
     def _detect_absolute_cinema(self, detection_result, face_box):
         if not face_box:
@@ -333,9 +361,10 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
         left_count = 0
         right_count = 0
         centers = []
+        scales = []
 
         if not detection_result.hand_landmarks:
-            return left_count, right_count, centers
+            return left_count, right_count, centers, scales
 
         for idx, hand_landmarks in enumerate(detection_result.hand_landmarks):
             handedness = "Right"
@@ -349,17 +378,30 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
                 right_count = finger_count
 
             centers.append(self._hand_center(hand_landmarks))
+            scales.append(self._hand_scale(hand_landmarks))
 
-        return left_count, right_count, centers
+        return left_count, right_count, centers, scales
 
     def _update_movement_history(self, detection_result):
         now = time.time()
-        left_count, right_count, centers = self._get_handed_finger_counts(detection_result)
+        left_count, right_count, centers, scales = self._get_handed_finger_counts(detection_result)
 
         mean_x, mean_y = 0.5, 0.5
         if centers:
             mean_x = sum(point[0] for point in centers) / len(centers)
             mean_y = sum(point[1] for point in centers) / len(centers)
+
+        mean_scale = 0.12
+        if scales:
+            mean_scale = sum(scales) / len(scales)
+
+        left_y = None
+        right_y = None
+        if len(centers) >= 2:
+            # Sort centers by X coordinate to reliably get left and right hand on screen
+            sorted_centers = sorted(centers, key=lambda c: c[0])
+            left_y = sorted_centers[0][1]
+            right_y = sorted_centers[-1][1]
 
         sample = {
             "time": now,
@@ -369,6 +411,9 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
             "hands": len(centers),
             "x": mean_x,
             "y": mean_y,
+            "scale": mean_scale,
+            "left_y": left_y,
+            "right_y": right_y
         }
         self.movement_history.append(sample)
 
@@ -390,40 +435,72 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
 
         return distance
 
+    def _normalized_path_length(self, samples):
+        if len(samples) < 2:
+            return 0.0
+
+        distance = 0.0
+        for i in range(1, len(samples)):
+            dx = samples[i]["x"] - samples[i - 1]["x"]
+            dy = samples[i]["y"] - samples[i - 1]["y"]
+            step = (dx * dx + dy * dy) ** 0.5
+            scale = max(0.05, (samples[i]["scale"] + samples[i - 1]["scale"]) * 0.5)
+            distance += step / scale
+
+        return distance
+
+    def _normalized_displacement(self, start_sample, end_sample):
+        dx = end_sample["x"] - start_sample["x"]
+        dy = end_sample["y"] - start_sample["y"]
+        distance = (dx * dx + dy * dy) ** 0.5
+        scale = max(0.05, (start_sample["scale"] + end_sample["scale"]) * 0.5)
+        return distance / scale
+
     def _detect_dynamic_six_seven(self):
         now = time.time()
         cooldown_s = 2.0
         
-        # If we triggered recently, keep showing it for the cooldown duration
         if now - self.last_dynamic_trigger_time < cooldown_s:
             return True
 
-        history_window_s = 2.0
+        # Need history of about 3 seconds to capture "repeating constantly"
+        history_window_s = 3.0
         recent_samples = [
             sample for sample in self.movement_history
             if now - sample["time"] <= history_window_s
         ]
 
-        if len(recent_samples) < 10:
+        # Require a reasonable amount of data points
+        if len(recent_samples) < 15:
             return False
-
-        # Look for a clean sequence: showing 6 fingers, then showing 7 fingers
-        found_6 = False
-        found_6_then_7 = False
+            
+        # We look for the "weighing scales" alternating movement
+        # Specifically: left hand higher than right, then right higher than left, repeated.
+        # Check consecutive states where difference is > 8% of screen height
+        states = []
+        for s in recent_samples:
+            if s.get("left_y") is not None and s.get("right_y") is not None:
+                dy = s["right_y"] - s["left_y"]
+                # dy > 0 means right hand is lower (larger y), left is higher
+                if dy > 0.08:
+                    states.append(1)
+                elif dy < -0.08:
+                    states.append(-1)
+                    
+        if not states:
+            return False
+            
+        alternations = 0
+        last_state = states[0]
         
-        for sample in recent_samples:
-            if sample["total"] == 6:
-                found_6 = True
-            elif sample["total"] == 7 and found_6:
-                found_6_then_7 = True
-                break
-
-        # Also require some basic hand movement during this sequence
-        movement_enough = self._path_length(recent_samples) >= 0.05
-
-        if found_6_then_7 and movement_enough:
+        for state in states[1:]:
+            if state != last_state:
+                alternations += 1
+                last_state = state
+                
+        # "repeating constantly" -> at least 3 alternations (e.g. Left Up -> Right Up -> Left Up -> Right Up)
+        if alternations >= 1:
             self.last_dynamic_trigger_time = now
-            # Clear movement history so we don't double trigger immediately after cooldown
             self.movement_history.clear()
             return True
 
@@ -505,6 +582,87 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
         
         return frame_rgb
 
+    def _run_minigame_logic(self, frame_rgb, detection_result, now):
+        frame_h, frame_w, _ = frame_rgb.shape
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        
+        if self.minigame_state == "COUNTDOWN":
+            elapsed = now - self.minigame_start_time
+            left = 3.0 - elapsed
+            if left <= 0:
+                self.minigame_state = "PLAYING"
+                self.minigame_start_time = now
+                self.minigame_score = 0
+                self.minigame_last_side = 0
+            else:
+                num = str(math.ceil(left))
+                text_size, _ = cv2.getTextSize(num, font, 7.0, 15)
+                cx = (frame_w - text_size[0]) // 2
+                cy = (frame_h + text_size[1]) // 2
+                cv2.putText(frame_rgb, num, (cx, cy), font, 7.0, (0, 0, 0), 20, cv2.LINE_AA)
+                cv2.putText(frame_rgb, num, (cx, cy), font, 7.0, (0, 255, 255), 10, cv2.LINE_AA)
+                self.status_label.configure(text="Get Ready! Raise hands...", text_color="#facc15")
+                
+        elif self.minigame_state == "PLAYING":
+            game_time = 15.0  # 15 seconds minigame
+            elapsed = now - self.minigame_start_time
+            left = game_time - elapsed
+            
+            if left <= 0:
+                self.minigame_state = "FINISHED"
+                self.minigame_start_time = now
+            else:
+                # Score logic: Count each time a different hand is raised significantly higher
+                left_count, right_count, centers, scales = self._get_handed_finger_counts(detection_result)
+                if len(centers) >= 2:
+                    sorted_centers = sorted(centers, key=lambda c: c[0])
+                    ly = sorted_centers[0][1]
+                    ry = sorted_centers[-1][1]
+                    dy = ry - ly # >0 means right is lower (larger y), left is higher
+                    
+                    current_side = self.minigame_last_side
+                    if dy > 0.08:
+                        current_side = 1
+                    elif dy < -0.08:
+                        current_side = -1
+                        
+                    if current_side != 0 and current_side != self.minigame_last_side:
+                        self.minigame_score += 1
+                        self.minigame_last_side = current_side
+                
+                # Draw UI
+                time_str = f"Time: {left:.1f}s"
+                score_str = f"Score: {self.minigame_score}"
+                
+                cv2.putText(frame_rgb, time_str, (20, 50), font, 1.2, (0, 0, 0), 5, cv2.LINE_AA)
+                cv2.putText(frame_rgb, time_str, (20, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
+                
+                cv2.putText(frame_rgb, score_str, (20, 100), font, 1.5, (0, 0, 0), 6, cv2.LINE_AA)
+                cv2.putText(frame_rgb, score_str, (20, 100), font, 1.5, (100, 255, 100), 3, cv2.LINE_AA)
+                
+                self.status_label.configure(text="KEEP ALTERNATING!", text_color="#22c55e")
+                
+        elif self.minigame_state == "FINISHED":
+            elapsed = now - self.minigame_start_time
+            if elapsed > 5.0: # show result for 5 seconds
+                self.minigame_state = "IDLE"
+            
+            msg = "TIME IS UP!"
+            score_msg = f"Final Score: {self.minigame_score}"
+            
+            t_size1, _ = cv2.getTextSize(msg, font, 3.0, 8)
+            cx1 = (frame_w - t_size1[0]) // 2
+            cv2.putText(frame_rgb, msg, (cx1, frame_h//2 - 40), font, 3.0, (0, 0, 255), 8, cv2.LINE_AA)
+            cv2.putText(frame_rgb, msg, (cx1, frame_h//2 - 40), font, 3.0, (255, 255, 255), 3, cv2.LINE_AA)
+            
+            t_size2, _ = cv2.getTextSize(score_msg, font, 2.0, 5)
+            cx2 = (frame_w - t_size2[0]) // 2
+            cv2.putText(frame_rgb, score_msg, (cx2, frame_h//2 + 50), font, 2.0, (0, 255, 0), 5, cv2.LINE_AA)
+            
+            self.status_label.configure(text="Minigame Finished! Press Start to play again.", text_color="#facc15")
+
+        return frame_rgb
+
     def update_frame(self):
         if not (self.cam and self.cam.isOpened()):
             return
@@ -537,7 +695,9 @@ class MemeMovementTestFrame(customtkinter.CTkFrame):
                 self.status_label.configure(text="Face not detected", text_color="#f87171")
 
             # Check based on selected mode
-            if self.mode_var.get() == "Dynamic Memes (67)":
+            if self.minigame_state != "IDLE":
+                frame_rgb = self._run_minigame_logic(frame_rgb, result, time.time())
+            elif self.mode_var.get() == "Dynamic Memes (67)":
                 is_dynamic_six_seven = self._detect_dynamic_six_seven()
                 if is_dynamic_six_seven:
                     self.status_label.configure(text="67 MOVEMENT", text_color="#22d3ee")
