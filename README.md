@@ -163,9 +163,8 @@ Heute habe ich zuerst das Settings-menu erstellt, und die Hotkeys erklärt, soda
 # 24.04.2026
 
 ## Mika
-- [ ] Präzisions Indikator: Prozentsatz für die Sicherheit der Erkennung des Buchstabens.
-- [ ] Morsecode übersetzer mit Lichtverhältnissen erstellen, Logik
 - [X] Morsecode-Alphabet als Liste hinzufügen als Hilfe für die Übersetzung
+- [X] Morse Code Alphabet als Hilfe erstellen (evtl. noch mit Sound hifle)
 
 ## Mateo
 - [ ] 1 dynamic Meme und 2 static meme einfügen
