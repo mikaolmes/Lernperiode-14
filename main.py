@@ -4,6 +4,7 @@ from morsecode import MorseCodeFrame
 from meme_movement import MemeMovementTestFrame
 from settings_frame import SettingsFrame
 from alphabet_frame import AlphabetFrame 
+from MorseCodeAlphabetFrame import MorseAL_Frame
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green") 
@@ -27,6 +28,7 @@ class MainApp(ctk.CTk):
         self.bind("3", lambda e: self.switch_frame(MemeMovementTestFrame))
         self.bind("4", lambda e: self.switch_frame(SettingsFrame))
         self.bind("5", lambda e: self.switch_frame(AlphabetFrame))
+        self.bind("6", lambda e: self.switch_frame(MorseAL_Frame))
 
         self.current_frame = None
         self.show_main_menu()
@@ -113,13 +115,25 @@ class MainMenuFrame(ctk.CTkFrame):
         )
         self.button_alpha.grid(row=5, column=0, pady=10)
 
+        # --- Button 6: Morse Code Alphatbet ---
+        self.button_button6 =ctk.CTkButton(
+            self,
+            text="Morse Code Alphabet (6)",
+            font=("Roboto", 22, "bold"),
+            height=70, width=400, corner_radius=15,
+            fg_color="#10b981",
+            hover_color="#059669",
+            command=lambda: master.switch_frame(MorseAL_Frame)
+        )
+        self.button_button6.grid(row=6, column=0, pady=10)
+
         # Footer Info
         self.info_label = ctk.CTkLabel(
             self, 
-            text="Nutze Tasten 1-5 zum schnellen Wechseln", 
+            text="Nutze Tasten 1-6 zum schnellen Wechseln", 
             font=("Arial", 12), text_color="gray"
         )
-        self.info_label.grid(row=6, column=0, pady=20)
+        self.info_label.grid(row=7, column=0, pady=20)
 
 if __name__ == "__main__":
     app = MainApp()
