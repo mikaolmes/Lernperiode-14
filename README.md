@@ -180,4 +180,3 @@ Heute habe ich zuerst das Settings-menu erstellt, und die Hotkeys erklärt, soda
 ## Alex
 - [ ] Bilder suchen/machen
 - [ ] Buchstaben löschen können
-- [ ] 
