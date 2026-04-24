@@ -3,7 +3,7 @@ from SignLanguage import CameraFrame
 from morsecode import MorseCodeFrame
 from meme_movement import MemeMovementTestFrame
 from settings_frame import SettingsFrame
-from alphabet_frame import AlphabetFrame  # <-- NEU: Import deiner neuen Datei
+from alphabet_frame import AlphabetFrame 
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green") 
@@ -26,7 +26,7 @@ class MainApp(ctk.CTk):
         self.bind("2", lambda e: self.switch_frame(MorseCodeFrame))
         self.bind("3", lambda e: self.switch_frame(MemeMovementTestFrame))
         self.bind("4", lambda e: self.switch_frame(SettingsFrame))
-        self.bind("5", lambda e: self.switch_frame(AlphabetFrame)) # <-- NEU: Hotkey 5
+        self.bind("5", lambda e: self.switch_frame(AlphabetFrame))
 
         self.current_frame = None
         self.show_main_menu()
@@ -68,6 +68,40 @@ class MainMenuFrame(ctk.CTkFrame):
         self.button1.grid(row=1, column=0, pady=10)
 
         # --- Button 2: Alphabet Referenz (DEIN NEUER TEIL) ---
+        self.button2 = ctk.CTkButton(
+            self,
+            text="Morse Code (2)",
+            font=("Roboto", 22, "bold"),
+            height=70, width=400, corner_radius=15,
+            fg_color="#333333", hover_color="#444444",
+            command=lambda: master.switch_frame(MorseCodeFrame)
+        )
+        self.button2.grid(row=2, column=0, pady=10)
+
+        
+        # --- Button 3: Morse Code ---
+        self.button3 = ctk.CTkButton(
+            self,
+            text="Meme Movement Test (3)",
+            font=("Roboto", 22, "bold"),
+            height=70, width=400, corner_radius=15,
+            fg_color="#1f2937", hover_color="#374151",
+            command=lambda: master.switch_frame(MemeMovementTestFrame)
+        )
+        self.button3.grid(row=3, column=0, pady=10)
+
+        # --- Button 4: Meme Movement ---
+        self.button4 = ctk.CTkButton(
+                self,
+                text="Settings (4)",
+                font=("Roboto", 22, "bold"),
+                height=70, width=400, corner_radius=15,
+                fg_color="transparent", border_width=2,
+                command=lambda: master.switch_frame(SettingsFrame)
+            )
+        self.button4.grid(row=4, column=0, pady=10)
+
+        # --- Button 5: Settings ---
         self.button_alpha = ctk.CTkButton(
             self,
             text="Alphabet Lernen (5)",
@@ -77,40 +111,7 @@ class MainMenuFrame(ctk.CTkFrame):
             hover_color="#1d4ed8",
             command=lambda: master.switch_frame(AlphabetFrame)
         )
-        self.button_alpha.grid(row=2, column=0, pady=10)
-
-        # --- Button 3: Morse Code ---
-        self.button2 = ctk.CTkButton(
-            self,
-            text="Morse Code (2)",
-            font=("Roboto", 22, "bold"),
-            height=70, width=400, corner_radius=15,
-            fg_color="#333333", hover_color="#444444",
-            command=lambda: master.switch_frame(MorseCodeFrame)
-        )
-        self.button2.grid(row=3, column=0, pady=10)
-
-        # --- Button 4: Meme Movement ---
-        self.button3 = ctk.CTkButton(
-            self,
-            text="Meme Movement Test (3)",
-            font=("Roboto", 22, "bold"),
-            height=70, width=400, corner_radius=15,
-            fg_color="#1f2937", hover_color="#374151",
-            command=lambda: master.switch_frame(MemeMovementTestFrame)
-        )
-        self.button3.grid(row=4, column=0, pady=10)
-
-        # --- Button 5: Settings ---
-        self.button4 = ctk.CTkButton(
-            self,
-            text="Settings (4)",
-            font=("Roboto", 22, "bold"),
-            height=70, width=400, corner_radius=15,
-            fg_color="transparent", border_width=2,
-            command=lambda: master.switch_frame(SettingsFrame)
-        )
-        self.button4.grid(row=5, column=0, pady=10)
+        self.button_alpha.grid(row=5, column=0, pady=10)
 
         # Footer Info
         self.info_label = ctk.CTkLabel(
