@@ -173,6 +173,10 @@ Heute habe ich zuerst das Settings-menu erstellt, und die Hotkeys erklärt, soda
 - [ ]
 
 ## Robin
+- [ ] Sound Features für Morsecode App
+- [ ] Lichtsensor MorseCode Übersetzer in Main Python App implementieren designänderungen 
+- [ ] ausbesserung UI Main Python App (Morse Code Sektor) -> hinzufügen einer Text Sektion  (Übersetztes Licht).
+- [ ] Sound MorseCode Übersetzter in Main Python App Implementieren
 
 ## Alex
 - [ ] Bilder suchen/machen
