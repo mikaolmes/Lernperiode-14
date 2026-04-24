@@ -111,17 +111,8 @@ class MorseAL_Frame(ctk.CTkFrame):
         pause_duration = dot_duration # Pause zwischen den Signalen
         frequency = 800 # Tonhöhe in Hertz
 
-        for symbol in morse_code:
-            if symbol == '.':
-                if HAS_WINSOUND:
-                    winsound.Beep(frequency, dot_duration)
-                else:
-                    time.sleep(dot_duration / 1000)
-            elif symbol == '-':
-                if HAS_WINSOUND:
-                    winsound.Beep(frequency, dash_duration)
-                else:
-                    time.sleep(dash_duration / 1000)
+            # Bild laden
+            img_path = os.path.join(os.path.dirname(__file__), image_folder, f"{letter}.jpg")
             
             # Kurze Pause nach jedem Signal (damit sie nicht ineinander fließen)
             time.sleep(pause_duration / 1000)

@@ -58,7 +58,7 @@ class AlphabetFrame(ctk.CTkFrame):
             l_label.pack(pady=5)
 
             # Bild laden
-            img_path = os.path.join(os.path.dirname(__file__), image_folder, f"{letter}.png")
+            img_path = os.path.join(os.path.dirname(__file__), image_folder, f"{letter}.jpg")
             
             if os.path.exists(img_path):
                 try:
